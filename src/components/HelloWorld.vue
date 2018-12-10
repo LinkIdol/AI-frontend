@@ -35,6 +35,13 @@ export default {
   name: 'HelloWorld',
   props: {
     msg: String
+  },
+  data() {
+    return {
+      baseUrl: process.env.BASE_URL
+    }
+  },
+  mounted() {
   }
 }
 </script>
