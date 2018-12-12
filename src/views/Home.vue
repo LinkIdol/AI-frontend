@@ -41,7 +41,7 @@
         <el-pagination
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
-                :current-page="currentPage4"
+                :current-page="1"
                 :page-sizes="[100, 200, 300, 400]"
                 :page-size="100"
                 layout="total, sizes, prev, pager, next, jumper"
@@ -74,6 +74,7 @@
 </template>
 
 <script>
+import api from '@/util/api'
 export default {
   name: 'home',
   data() {
@@ -114,6 +115,14 @@ export default {
               num: '71'
           }
       ]
+    }
+  },
+  methods: {
+    handleSizeChange () {
+
+    },
+    handleCurrentChange () {
+
     }
   }
 }
