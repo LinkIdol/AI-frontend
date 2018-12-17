@@ -23,12 +23,40 @@
                     :total="400">
             </el-pagination>
         </div>
+      <div class="mainContainer">
+        <el-card v-for="(x, i) in cardList" :key="i" :body-style="{ padding: '0px' }" class="mycard">
+          <div class="imageContainer">
+            <img src="https://img.crypko.ai/daisy/03b2239f442b83f6516ead0461328346e1bf3422_sm.jpg" class="image">
+          </div>
+          <div class="card-below">
+            <div>
+              <span>{{x.name}}</span>
+            </div>
+            <div>
+              <span >{{x.gen}}</span>
+              <span>{{x.num}}</span>
+            </div>
+          </div>
+        </el-card>
+      </div>
+      <div style="margin-top: 4rem;margin-bottom: 2rem;">
+        <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="1"
+                :page-sizes="[100, 200, 300, 400]"
+                :page-size="100"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="400">
+        </el-pagination>
+      </div>
     </el-main>
 </template>
 
 <script>
 import Card from '@/components/card'
 import Card2 from '@/components/Card2'
+import api from '@/util/api'
 export default {
     name: 'home',
     components: {
