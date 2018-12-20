@@ -1,8 +1,8 @@
 <template>
   <div class="card">
     <div class="card-body">
-      <div class="heart-icon">
-        <font-awesome-icon icon="heart"/>
+      <div class="heart-icon-container">
+        <font-awesome-icon :icon="['far', 'heart']" />
       </div>
       <div class="body-top">
         <span>cryptogirls</span>
@@ -32,6 +32,8 @@ export default {
     }
   },
   mounted() {
+  },
+  methods: {
   }
 }
 </script>
@@ -42,7 +44,7 @@ export default {
   .card {
     position: relative;
   }
-  .heart-icon {
+  .heart-icon-container {
     padding: 6px 25px 6px 15px;
     position: absolute;
     top: -4px;
@@ -58,9 +60,11 @@ export default {
     background-color: #404040;
     font-size: 12px;
     text-align: right;
-    line-height: 18px;
-    height: 18px;
-    padding: 2px 10px;
+    padding: 4px 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
   }
   .body-bottom {
     padding: 2px 10px;

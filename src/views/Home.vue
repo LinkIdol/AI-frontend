@@ -1,133 +1,147 @@
 <template>
-    <el-main style="padding: 0;">
-        <div class="myMenu">
-            <el-menu mode="horizontal" style="border-bottom: none;">
-                <el-menu-item index="1">全部</el-menu-item>
-                <el-menu-item index="2">待出售</el-menu-item>
-                <el-menu-item index="3">可租赁</el-menu-item>
-                <el-menu-item index="4">最新</el-menu-item>
-            </el-menu>
-            <el-input style="width: 200px;" size="small" placeholder="编码、名称、#标签..." suffix-icon="el-icon-search"></el-input>
+    <el-main class="home-page">
+        <div class="line">
+            <img style="width: 100%;" src="../assets/line2@2x.png" alt="">
         </div>
-        <div class="mainContainer">
-            <Card2 style="margin-right: 10rem;"></Card2>
+        <div class="home-header fixed-width cryptoTab">
+            <div style="display: flex;align-items: center">
+                <el-menu
+                        default-active="1"
+                        mode="horizontal"
+                        background-color="#191428"
+                        text-color="#BDBDBD"
+                        active-text-color="#ffffff">
+                    <el-menu-item index="1">全部</el-menu-item>
+                    <el-menu-item index="2">待出售</el-menu-item>
+                    <el-menu-item index="3">可租赁</el-menu-item>
+                    <el-menu-item index="4">最新</el-menu-item>
+                </el-menu>
+                <div class="c-input">
+                    <el-input
+                            placeholder="编号、名称、#标签 …"
+                            prefix-icon="el-icon-search" clearable>
+                    </el-input>
+                </div>
+            </div>
+            <div class="menu-container">
+                <div class="menu-btn">
+                    <!--<div class="filter-icon">-->
+                        <!--<img src="../assets/menu.png" style="width: 100%;" alt="">-->
+                    <!--</div>-->
+                    <font-awesome-icon :icon="['fas', 'filter']" style="margin-right: 8px;"/>
+                    <span>筛选</span>
+                </div>
+                <div class="menu-btn">
+                    <font-awesome-icon :icon="['fas', 'bars']" style="margin-right: 8px;"/>
+                    <span>ID降序</span>
+                </div>
+            </div>
+        </div>
+        <div class="fixed-width mainContainer">
+            <Card style="margin-right: 4rem;"></Card>
+            <Card style="margin-right: 4rem;"></Card>
+            <Card style="margin-right: 4rem;"></Card>
             <Card></Card>
-            <Card v-for="(x, i) in cardList" :key="i" class="mycard"></Card>
         </div>
-        <div class="my-pagination">
-            <el-pagination
-                    @current-change="handleCurrentChange"
-                    :current-page="currentPage"
-                    :page-size="100"
-                    layout="total, prev, pager, next, jumper"
-                    :total="400">
-            </el-pagination>
-        </div>
-      <div class="mainContainer">
-        <el-card v-for="(x, i) in cardList" :key="i" :body-style="{ padding: '0px' }" class="mycard">
-          <div class="imageContainer">
-            <img src="https://img.crypko.ai/daisy/03b2239f442b83f6516ead0461328346e1bf3422_sm.jpg" class="image">
-          </div>
-          <div class="card-below">
-            <div>
-              <span>{{x.name}}</span>
-            </div>
-            <div>
-              <span >{{x.gen}}</span>
-              <span>{{x.num}}</span>
-            </div>
-          </div>
-        </el-card>
-      </div>
-      <div style="margin-top: 4rem;margin-bottom: 2rem;">
-        <el-pagination
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :current-page="1"
-                :page-sizes="[100, 200, 300, 400]"
-                :page-size="100"
-                layout="total, sizes, prev, pager, next, jumper"
-                :total="400">
-        </el-pagination>
-      </div>
     </el-main>
 </template>
 
 <script>
-import Card from '@/components/card'
-import Card2 from '@/components/Card2'
-import api from '@/util/api'
-export default {
-    name: 'home',
-    components: {
-        Card,
-        Card2,
-    },
-    data() {
-        return {
-            currentPage: 0,
-            currentDate: new Date(),
-            cardList: []
+    import Card from '@/components/Card'
+
+    export default {
+        name: 'home',
+        components: {
+            Card
+        },
+        data() {
+            return {}
+        },
+        methods: {},
+        created() {
+
         }
-    },
-    methods: {
-        handleCurrentChange() {},
-    },
-    created() {
-        
     }
-}
 </script>
-<style scoped>
-    .myMenu {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border-bottom: solid 1px #e6e6e6;
-        padding: 0 2rem;
-    }
-    .imageContainer {
-        height: 140px;
-        width: 140px;
-        position: relative;
-    }
-    .image {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: auto;
-        z-index: 1;
-        transition-duration: .3s;
-        transition-property: all;
-        transition-timing-function: ease-out;
-        transform: translateZ(0);
-    }
+<style lang="scss" scoped>
     .mainContainer {
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: flex-start;
         flex-wrap: wrap;
-        padding: 20px;
         margin: 0 auto;
-        width: 1000px;
-
     }
-    .card-below {
-        padding: 6px 10px;
-        background-color: rgb(134, 205, 123);
-        font-size: 14px;
+
+    .line {
+        width: $innerWidth;
+        position: absolute;
+        top: 9px;
+    }
+
+    .home-page {
+        position: relative;
+        width: $innerWidth;
+        padding: 0;
+        margin: 0 auto;
+    }
+
+    .home-header {
+        display: flex;
+        flex-direction: row;
+        padding: 0 20px;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .c-input {
+        align-self: stretch;
+        display: flex;
+        align-items: center;
+        margin-left: 40px;
+    }
+    .menu-container {
+        display: flex;
+        margin-top: 10px;
+    }
+    .menu-btn {
+        color: #BDBDBD;
+        font-size: 15px;
+        z-index: 2;
+        cursor: pointer;
+    }
+    .menu-btn:hover {
         color: #fff;
     }
-    .mycard {
-        margin: 20px 144px 20px 0;
+    .menu-btn + .menu-btn {
+        margin-left: 20px;
     }
-    .mycard:nth-child(4n) {
-        margin-right: 0;
+    .filter-icon {
+        width: 10px;
+        display: inline-block;
+        margin-right: 8px;
     }
-    .my-pagination {
-        text-align: center;
-        margin-bottom: 2rem;
+</style>
+<style lang="scss">
+    .c-input .el-input__inner {
+        background-color: $bgColor;
+        border: none;
+        color: #ffffff;
+    }
+
+    input::-webkit-input-placeholder {
+        color: #989898 !important;
+    }
+
+    input::-moz-placeholder {
+        color: #989898 !important;
+    }
+
+    input:-ms-input-placeholder {
+        color: #989898 !important;
+    }
+
+    .el-input__prefix, .el-input__suffix {
+        color: #989898 !important;
     }
 </style>

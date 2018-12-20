@@ -1,37 +1,30 @@
 <template>
     <div id="app">
         <el-container>
-            <el-header style="padding: 0;height: auto;">
-                <div>
-                    <div class="logoDiv">
-                        <img src="https://crypko.ai/static/images/logo-header.png" class="logo-icon">
-                        <div class="myTab">
-                            <el-button type="text">注册</el-button>
-                            <el-button type="text">登录</el-button>
-                        </div>
+
+            <CryptoHeader></CryptoHeader>
+            <router-view></router-view>
+            <el-footer style="background-color: #0C071C;height: auto;">
+                <div class="fixed-width myFooter">
+                    <div>
+                        <p>市场</p>
+                        <p>常见问题</p>
+                        <p>教程</p>
+                    </div>
+                    <div>
+                        <p>关于</p>
+                        <p>白皮书</p>
+                        <p>关于</p>
+                        <p>隐私政策</p>
+                    </div>
+                    <div>
+                        <p>telegram</p>
+                        <p>twitter</p>
+                        <p>youtube</p>
                     </div>
                 </div>
-            </el-header>
-            <router-view></router-view>
-            <el-footer style="border-top: solid 1px #e6e6e6;" class="myFooter">
-                <div>
-                    <p>市场</p>
-                    <p>常见问题</p>
-                    <p>教程</p>
-                </div>
-                <div>
-                    <p>关于</p>
-                    <p>白皮书</p>
-                    <p>关于</p>
-                    <p>隐私政策</p>
-                </div>
-                <div>
-                    <p>telegram</p>
-                    <p>twitter</p>
-                    <p>youtube</p>
-                </div>
-                <div>
-                    <p>Copyright © 2018 Andoromeda</p>
+                <div class="copyRight">
+                    <span>Copyright © 2018 CryptoGirls Team </span>
                 </div>
             </el-footer>
         </el-container>
@@ -40,10 +33,15 @@
 
 <script>
 import api from '@/util/api'
+import CryptoHeader from './components/layout/CryptoHeader'
+import CryptoFooter from './components/layout/CryptoFooter'
 
 export default {
   name: 'app',
-  components: {},
+  components: {
+      CryptoHeader,
+      CryptoFooter
+  },
   mounted (){
     api.setTronWeb(window.tronWeb)
 
@@ -62,37 +60,37 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
     html,body {
         padding: 0;
         margin: 0;
-        background-color: #191428;
+        background-color: $bgColor;
     }
-    .logo-icon {
-        width: 300px;
-    }
-    .logoDiv {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 2rem;
-    }
-    .myTab {
-        height: 100%;
-        display: flex;
-        align-items: center;
+    .fixed-width {
+        max-width: 1000px;
+        padding: 20px;
+        width: 100%;
+        margin: 0 auto;
+
     }
     .myFooter {
         display: flex;
         padding: 20px 20px 40px 20px;
         flex-direction: row;
-        height: auto!important;
         justify-content: space-between;
         font-size: 14px;
-        color: #909399;
+        color: #fff;
     }
     .myFooter p {
         line-height: 14px;
+    }
+    .copyRight {
+        width: 1100px;
+        text-align: center;
+        margin: 0 auto;
+        color: #fff;
+        font-size: 14px;
+        padding: 40px;
+        border-top: 1px solid #191428;
     }
 </style>

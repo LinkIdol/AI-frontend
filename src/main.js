@@ -4,10 +4,11 @@ import router from './router'
 import store from './store'
 import './plugins/element.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faCoffee, faHeart, faHeartbeat } from '@fortawesome/free-solid-svg-icons'
+import { faCoffee, faHeart, faFilter, faBars } from '@fortawesome/free-solid-svg-icons'
+import { faHeart as farHeart } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faCoffee, faHeart, faHeartbeat)
+library.add(faCoffee, faHeart, farHeart, faFilter, faBars)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 

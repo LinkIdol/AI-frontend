@@ -11,5 +11,4 @@
   .green {
     color: green;
   }
-  // @import "../styles/about.scss";
 </style>
