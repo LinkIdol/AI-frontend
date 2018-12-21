@@ -1,19 +1,33 @@
 <template>
     <el-header class="page-header" style="height: auto;">
         <div class="line">
-            <img src="../../assets/line1@2x.png" alt="" style="width: 100%">
+            <img src="@/assets/line1@2x.png" alt="" style="width: 100%">
         </div>
         <div class="fixed-width logoDiv cryptoTab">
-            <img src="../../assets/CryptoGirls@2x.png" class="logo-icon">
+            <router-link to="/">
+                <img src="@/assets/CryptoGirls@2x.png" class="logo-icon">
+            </router-link>
             <el-menu
                     default-active="1"
                     mode="horizontal"
                     background-color="#191428"
                     text-color="#BDBDBD"
                     active-text-color="#ffffff">
-                <el-menu-item index="1">市场</el-menu-item>
-                <el-menu-item index="2">注册</el-menu-item>
-                <el-menu-item index="3">登录</el-menu-item>
+                <el-menu-item index="1">
+                    <router-link to="/market">
+                        市场
+                    </router-link>
+                </el-menu-item>
+                <el-menu-item index="2">
+                    <router-link to="/">
+                        注册
+                    </router-link>
+                </el-menu-item>
+                <el-menu-item index="3">
+                    <router-link to="/">
+                        登录
+                    </router-link>
+                </el-menu-item>
             </el-menu>
         </div>
     </el-header>

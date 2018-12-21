@@ -25,9 +25,6 @@
             </div>
             <div class="menu-container">
                 <div class="menu-btn">
-                    <!--<div class="filter-icon">-->
-                        <!--<img src="../assets/menu.png" style="width: 100%;" alt="">-->
-                    <!--</div>-->
                     <font-awesome-icon :icon="['fas', 'filter']" style="margin-right: 8px;"/>
                     <span>筛选</span>
                 </div>
@@ -37,40 +34,65 @@
                 </div>
             </div>
         </div>
-        <div class="fixed-width mainContainer">
-            <Card style="margin-right: 4rem;"></Card>
-            <Card style="margin-right: 4rem;"></Card>
-            <Card style="margin-right: 4rem;"></Card>
-            <Card></Card>
+        <div class="fixed-width cardContainer">
+            <Card v-for="i in 8" :key="i" class="card"></Card>
         </div>
+        <!--<div class="pagination">
+            <el-pagination
+                    layout="prev, pager, next"
+                    :total="50">
+            </el-pagination>
+        </div>-->
     </el-main>
 </template>
 
 <script>
     import Card from '@/components/Card'
-
+    import apis from '@/util/apis'
     export default {
         name: 'home',
         components: {
             Card
         },
         data() {
-            return {}
+            return {
+                cardList: []
+            }
         },
         methods: {},
         created() {
-
+            console.log(this.CONFIG)
+            apis.getList({
+                page: 1,
+                pageSize: 2,
+                category: "forsale",
+                hairColors: "blonde,brown,black,blue",
+                eyeColors: "brown,black",
+                hairStyles: "long hair,short hair",
+                attributes: "hasname,hasbio,cooldownready,dark skin,blush,smile,open mouth,hat,ribbon,glasses",
+                filters: "iteration:1~2,cooldown:ur|ssr|sr|r|n,price:1~2",
+                sort: "-id"
+            }).then(res => {
+                console.log(res);
+            })
         }
     }
 </script>
 <style lang="scss" scoped>
-    .mainContainer {
+    .card {
+        margin-right: 4rem;
+        margin-bottom: 4rem;
+    }
+    .card:nth-child(4n) {
+        margin-right: 0;
+    }
+    .cardContainer {
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: flex-start;
+        justify-content: space-between;
         flex-wrap: wrap;
-        margin: 0 auto;
+        margin: 3rem auto;
     }
 
     .line {
@@ -82,7 +104,7 @@
     .home-page {
         position: relative;
         width: $innerWidth;
-        padding: 0;
+        padding: 0 0 100px 0;
         margin: 0 auto;
     }
 
@@ -121,6 +143,10 @@
         display: inline-block;
         margin-right: 8px;
     }
+    .pagination {
+        background-color: $bgColor;
+        text-align: center;
+    }
 </style>
 <style lang="scss">
     .c-input .el-input__inner {
@@ -144,4 +170,13 @@
     .el-input__prefix, .el-input__suffix {
         color: #989898 !important;
     }
+    /*.el-pagination .btn-next, .el-pagination .btn-prev {
+        background-color: $bgColor;
+    }
+    .el-pagination button:disabled {
+        background-color: $bgColor;
+    }
+    .el-pager li {
+        background-color: $bgColor;
+    }*/
 </style>
