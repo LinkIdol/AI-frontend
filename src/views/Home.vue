@@ -34,8 +34,8 @@
                 </div>
             </div>
         </div>
-        <div class="fixed-width cardContainer">
-            <Card v-for="i in 8" :key="i" class="card"></Card>
+        <div class="fixed-width cardContainer" v-loading="loading" element-loading-background="#191428">
+            <Card v-for="(item, i) in idolList" :key="i" class="card" :idol="item"></Card>
         </div>
         <!--<div class="pagination">
             <el-pagination
@@ -48,40 +48,51 @@
 
 <script>
     import Card from '@/components/Card'
-    import apis from '@/util/apis'
+    import API from '@/api'
     export default {
-        name: 'home',
+        name: 'Market',
         components: {
             Card
         },
         data() {
             return {
-                cardList: []
+                idolList: [],
+                pageIndex: 1,
+                pageSize: 12,
+                loading: false
             }
         },
-        methods: {},
+        methods: {
+            getList() {
+                this.loading = true;
+                let params = {
+                    page: this.pageIndex,
+                    pageSize: this.pageSize,
+                    category: "forsale",
+                    hairColors: "blonde,brown,black,blue",
+                    eyeColors: "brown,black",
+                    hairStyles: "long hair,short hair",
+                    attributes: "hasname,hasbio,cooldownready,dark skin,blush,smile,open mouth,hat,ribbon,glasses",
+                    filters: "iteration:1~2,cooldown:ur|ssr|sr|r|n,price:1~2",
+                    sort: "-id"
+                }
+                // API.getList(params).then(res => {
+                //     this.loading = false;
+                //     if (res.code === 0) {
+                //         this.idolList = res.data;
+                //     }
+                // })
+            }
+        },
         created() {
-            console.log(this.CONFIG)
-            apis.getList({
-                page: 1,
-                pageSize: 2,
-                category: "forsale",
-                hairColors: "blonde,brown,black,blue",
-                eyeColors: "brown,black",
-                hairStyles: "long hair,short hair",
-                attributes: "hasname,hasbio,cooldownready,dark skin,blush,smile,open mouth,hat,ribbon,glasses",
-                filters: "iteration:1~2,cooldown:ur|ssr|sr|r|n,price:1~2",
-                sort: "-id"
-            }).then(res => {
-                console.log(res);
-            })
+            this.getList();
         }
     }
 </script>
 <style lang="scss" scoped>
     .card {
-        margin-right: 4rem;
         margin-bottom: 4rem;
+        margin-right: 128px;
     }
     .card:nth-child(4n) {
         margin-right: 0;
@@ -90,7 +101,7 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-start;
         flex-wrap: wrap;
         margin: 3rem auto;
     }

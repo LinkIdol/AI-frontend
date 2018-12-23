@@ -1,5 +1,5 @@
 <template>
-    <div class="card">
+    <div class="idol">
         <div class="card-body" @click="toDetail">
             <div class="heart-icon-container">
                 <font-awesome-icon :icon="['far', 'heart']"/>
@@ -18,7 +18,7 @@
             </div>
         </div>
         <div class="buy">
-            <span>加入购物车</span>
+            <span>购买</span>
         </div>
     </div>
 </template>
@@ -26,6 +26,26 @@
 <script>
     export default {
         name: 'Card',
+        props: {
+            idol: {
+                type: Object,
+                default: function () {
+                    return {
+                        Bio:"1",
+                        BirthTime:0,
+                        Cooldown:0,
+                        Generation:2,
+                        Genes:"0",
+                        MatronId:0,
+                        NickName:"1",
+                        Pic:"/idol/00a1f298bbe0.jpg",
+                        SireId:0,
+                        TokenId:2,
+                        UserId:1
+                    }
+                }
+            }
+        },
         data() {
             return {
                 imgsrc: 'https://img.crypko.ai/daisy/03b2239f442b83f6516ead0461328346e1bf3422_sm.jpg'
@@ -46,8 +66,10 @@
 <style lang="scss" scoped>
     $border-color: #656DF2;
     $width: 150px;
-    .card {
+    .idol {
         position: relative;
+        font-size: 14px;
+        color: #fff;
     }
 
     .heart-icon-container {
@@ -58,12 +80,6 @@
         z-index: 2;
         background: linear-gradient(-45deg, transparent 10px, $border-color 0);
     }
-
-    .card {
-        font-size: 14px;
-        color: #fff;
-    }
-
     .body-top {
         background-color: #404040;
         font-size: 12px;

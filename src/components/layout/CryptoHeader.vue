@@ -18,11 +18,11 @@
                         市场
                     </router-link>
                 </el-menu-item>
-                <el-menu-item index="2">
-                    <router-link to="/">
-                        注册
-                    </router-link>
-                </el-menu-item>
+                <!--<el-menu-item index="2">-->
+                    <!--<router-link to="/">-->
+                        <!--注册-->
+                    <!--</router-link>-->
+                <!--</el-menu-item>-->
                 <el-menu-item index="3">
                     <router-link to="/">
                         登录
