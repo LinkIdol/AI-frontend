@@ -4,38 +4,7 @@
             <CryptoHeader></CryptoHeader>
             <router-view></router-view>
             <el-footer style="background-color: #0C071C;height: auto;">
-                <div class="fixed-width myFooter">
-                    <div>
-                        <p>
-                            <router-link to="/market">市场</router-link>
-                        </p>
-                        <p>
-                            <router-link to="/market">常见问题</router-link>
-                        </p>
-                        <p>
-                            <router-link to="/market">教程</router-link>
-                        </p>
-                    </div>
-                    <div>
-                        <p>
-                            <router-link to="/about">关于</router-link>
-                        </p>
-                        <p>
-                            <router-link to="/market">白皮书</router-link>
-                        </p>
-                        <p>
-                            <router-link to="/market">隐私政策</router-link>
-                        </p>
-                    </div>
-                    <div>
-                        <p><a href="https://telegram.org/">telegram</a></p>
-                        <p><a href="https://twitter.com/">twitter</a></p>
-                        <p><a href="https://www.youtube.com/">youtube</a></p>
-                    </div>
-                </div>
-                <div class="copyRight">
-                    <span>Copyright © 2018 CryptoGirls Team </span>
-                </div>
+                <CryptoFooter></CryptoFooter>
             </el-footer>
         </el-container>
     </div>
@@ -44,13 +13,48 @@
 <script>
     //import api from '@/util/api'
     import CryptoHeader from './components/layout/CryptoHeader'
+    import CryptoFooter from './components/layout/CryptoFooter'
+    import API from '@/api'
 
     export default {
         name: 'app',
         components: {
-            CryptoHeader
+            CryptoHeader,
+            CryptoFooter
         },
         mounted() {
+            /*window.onload = () => {
+                if (!window.tronWeb) {
+                    this.$notify({
+                        title: '提示',
+                        message: '请先安装波场钱包插件',
+                        duration: 0
+                    });
+                    this.$store.commit('updateLogin', false)
+                } else {
+                    console.log(window.tronWeb)
+                    if (!window.tronWeb.ready) {
+                        this.$notify({
+                            title: '提示',
+                            message: '波场钱包请先解锁',
+                            duration: 0
+                        });
+                        this.$store.commit('updateLogin', false)
+                    } else {
+                        this.$store.commit('updateLogin', true)
+                        let address = window.tronWeb.defaultAddress.hex;
+                        API.login({
+                            address: address,
+                            sign: ''
+                        }).then(res => {
+                            console.log(res);
+                        });
+                        window.tronWeb.trx.getAccount(address).then((res) => {
+                            console.log(res);
+                        })
+                    }
+                }
+            }*/
             /*api.setTronWeb(window.tronWeb)
 
             api.contract.allOf(1).call().then(resp => {
@@ -64,6 +68,8 @@
             api.contract.tokenExists(1).call().then(resp => {
               console.log(resp)
             })*/
+        },
+        methods: {
         }
     }
 </script>
@@ -81,40 +87,5 @@
         width: 100%;
         margin: 0 auto;
 
-    }
-
-    .myFooter {
-        display: flex;
-        padding: 20px 20px 40px 20px;
-        flex-direction: row;
-        justify-content: space-between;
-        font-size: 14px;
-        color: #BDBDBD;
-    }
-
-    .myFooter p {
-        line-height: 14px;
-    }
-
-    .myFooter a {
-        color: #BDBDBD;
-    }
-
-    .myFooter a:hover {
-        color: #ffffff;
-    }
-
-    .copyRight {
-        width: 1100px;
-        text-align: center;
-        margin: 0 auto;
-        color: #BDBDBD;
-        font-size: 14px;
-        padding: 40px;
-        border-top: 1px solid #191428;
-    }
-
-    a {
-        text-decoration: none;
     }
 </style>

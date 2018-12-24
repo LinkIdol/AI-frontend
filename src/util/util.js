@@ -1,6 +1,5 @@
 import { Notification } from 'element-ui';
 
-
 export default {
     checkEnv() {
         window.onload = function () {
@@ -12,7 +11,13 @@ export default {
                     duration: 0
                 });
             } else {
-                console.log(window.tronWeb)
+                if (!window.tronWeb.ready) {
+                    Notification({
+                        title: '提示',
+                        message: '波场钱包请先登录',
+                        duration: 0
+                    });
+                }
             }
         }
     }

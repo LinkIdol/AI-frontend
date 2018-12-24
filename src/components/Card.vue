@@ -1,20 +1,21 @@
 <template>
     <div class="idol">
         <div class="card-body" @click="toDetail">
-            <div class="heart-icon-container">
-                <font-awesome-icon :icon="['far', 'heart']"/>
+            <div class="heart-icon-container" @click.stop>
+                <!--<img class="heart-img" alt="" @click.stop="like">-->
+                <font-awesome-icon :icon="['fas', 'heart']" class="heart-icon"/>
             </div>
             <div class="body-top">
-                <span>cryptogirls</span>
+                <span>{{idol.NickName}}</span>
             </div>
             <div class="image-inner">
-                <img :src="imgsrc" class="avatar-img">
+                <img :src="IMG_SERVER + idol.Pic" class="avatar-img">
             </div>
             <div class="body-middle">
-                <span>第14世代 · R</span>
+                <span>第{{idol.Genes}}世代 · R</span>
             </div>
             <div class="body-bottom">
-                <span>#712044</span>
+                <span>#{{idol.TokenId}}</span>
             </div>
         </div>
         <div class="buy">
@@ -24,6 +25,8 @@
 </template>
 
 <script>
+    import API from '@/api'
+    import config from '@/api/config'
     export default {
         name: 'Card',
         props: {
@@ -48,7 +51,7 @@
         },
         data() {
             return {
-                imgsrc: 'https://img.crypko.ai/daisy/03b2239f442b83f6516ead0461328346e1bf3422_sm.jpg'
+                IMG_SERVER: config.IMG_SERVER
             }
         },
         mounted() {
@@ -56,7 +59,12 @@
         methods: {
             toDetail() {
                 this.$router.push({
-                    path: '/card'
+                    path: `/card/${this.idol.TokenId}`
+                })
+            },
+            like() {
+                API.like({tokenId: this.idol.TokenId}).then(res => {
+                    if (res.code === 0) {}
                 })
             }
         }
@@ -66,6 +74,17 @@
 <style lang="scss" scoped>
     $border-color: #656DF2;
     $width: 150px;
+    /*.heart-img {
+        width: 16px;
+        height: auto;
+        content: url("../assets/heart.svg");
+    }
+    .heart-img:hover {
+        content: url("../assets/heart-fill.svg");
+    }*/
+    .heart-icon:hover {
+        color: $bgColor;
+    }
     .idol {
         position: relative;
         font-size: 14px;

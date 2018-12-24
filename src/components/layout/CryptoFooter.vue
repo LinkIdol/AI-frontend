@@ -1,25 +1,38 @@
 <template>
-    <el-footer style="border-top: solid 1px #e6e6e6;" class="myFooter">
-        <div>
-            <p>市场</p>
-            <p>常见问题</p>
-            <p>教程</p>
+    <div>
+        <div class="fixed-width myFooter">
+            <div>
+                <p>
+                    <router-link to="/market">市场</router-link>
+                </p>
+                <p>
+                    <router-link to="/market">常见问题</router-link>
+                </p>
+                <p>
+                    <router-link to="/market">教程</router-link>
+                </p>
+            </div>
+            <div>
+                <p>
+                    <router-link to="/about">关于</router-link>
+                </p>
+                <p>
+                    <router-link to="/market">白皮书</router-link>
+                </p>
+                <p>
+                    <router-link to="/market">隐私政策</router-link>
+                </p>
+            </div>
+            <div>
+                <p><a href="https://telegram.org/">telegram</a></p>
+                <p><a href="https://twitter.com/">twitter</a></p>
+                <p><a href="https://www.youtube.com/">youtube</a></p>
+            </div>
         </div>
-        <div>
-            <p>关于</p>
-            <p>白皮书</p>
-            <p>关于</p>
-            <p>隐私政策</p>
+        <div class="copyRight">
+            <span>Copyright © 2018 CryptoGirls Team </span>
         </div>
-        <div>
-            <p>telegram</p>
-            <p>twitter</p>
-            <p>youtube</p>
-        </div>
-        <div>
-            <p>Copyright © 2018 Andoromeda</p>
-        </div>
-    </el-footer>
+    </div>
 </template>
 
 <script>
@@ -37,16 +50,38 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .myFooter {
-    display: flex;
-    padding: 20px 20px 40px 20px;
-    flex-direction: row;
-    height: auto!important;
-    justify-content: space-between;
-    font-size: 14px;
-    color: #909399;
-  }
-  .myFooter p {
-    line-height: 14px;
-  }
+    .myFooter {
+        display: flex;
+        padding: 20px 20px 40px 20px;
+        flex-direction: row;
+        justify-content: space-between;
+        font-size: 14px;
+        color: #BDBDBD;
+    }
+
+    .myFooter p {
+        line-height: 14px;
+    }
+
+    .myFooter a {
+        color: #BDBDBD;
+    }
+
+    .myFooter a:hover {
+        color: #ffffff;
+    }
+
+    .copyRight {
+        width: 1100px;
+        text-align: center;
+        margin: 0 auto;
+        color: #BDBDBD;
+        font-size: 14px;
+        padding: 40px;
+        border-top: 1px solid #191428;
+    }
+
+    a {
+        text-decoration: none;
+    }
 </style>

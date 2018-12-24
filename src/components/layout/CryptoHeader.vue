@@ -7,45 +7,101 @@
             <router-link to="/">
                 <img src="@/assets/CryptoGirls@2x.png" class="logo-icon">
             </router-link>
-            <el-menu
-                    default-active="1"
-                    mode="horizontal"
-                    background-color="#191428"
-                    text-color="#BDBDBD"
-                    active-text-color="#ffffff">
-                <el-menu-item index="1">
-                    <router-link to="/market">
+            <div style="display: flex;">
+                <el-menu
+                        default-active="market"
+                        mode="horizontal"
+                        background-color="#191428"
+                        text-color="#BDBDBD"
+                        select="loginSelect"
+                        router
+                        active-text-color="#ffffff">
+                    <el-menu-item index="market" route="/market">
                         市场
-                    </router-link>
-                </el-menu-item>
-                <!--<el-menu-item index="2">-->
-                    <!--<router-link to="/">-->
-                        <!--注册-->
-                    <!--</router-link>-->
-                <!--</el-menu-item>-->
-                <el-menu-item index="3">
-                    <router-link to="/">
-                        登录
-                    </router-link>
-                </el-menu-item>
-            </el-menu>
+                    </el-menu-item>
+                    <el-menu-item index="register" route="/register" v-if="!isLoginIn">
+                        注册
+                    </el-menu-item>
+                    <el-menu-item index="user" route="/user" v-if="isLoginIn">
+                        <font-awesome-icon :icon="['fas', 'user-circle']" size="lg"/>
+                    </el-menu-item>
+                </el-menu>
+                <div v-if="!isLoginIn" class="menuItem" @click="login">登录</div>
+            </div>
         </div>
     </el-header>
 </template>
 
 <script>
+    import API from '@/api'
+    import { mapState } from 'vuex'
     export default {
         name: 'CryptoHeader',
         data() {
-            return {}
+            return {
+            }
         },
         mounted() {
+            console.log(this.$route)
         },
-        methods: {}
+        methods: {
+            login() {
+                API.login({
+                    address: '',
+                    sign: ''
+                }).then(res => {
+                    console.log(res);
+                })
+            },
+            register() {
+                API.register({
+                    address: 'TVjmtiAVdbox9LYtZ7eu8Bq7mHJFZCZ3dg',
+                    name: 'chenhao',
+                    sign: 'eff7d5dba32b4da32d9a67a519434d3f'
+                }).then(res => {
+                    console.log(res);
+                })
+            },
+            toUser() {
+                this.$router.push({
+                    path: '/user'
+                })
+            }
+        },
+        computed: {
+            ...mapState([
+                'isLoginIn'
+            ])
+        }
     }
 </script>
 
 <style lang="scss" scoped>
+    .avatar {
+        color: rgb(189, 189, 189);
+        display: inline-block;
+        height: 50px;
+        line-height: 50px;
+        cursor: pointer;
+        padding: 0 8px;
+    }
+    .avatar:hover {
+        color: #fff;
+    }
+    .menuItem {
+        display: inline-block;
+        height: 50px!important;
+        line-height: 50px!important;
+        padding: 0 8px;
+        font-size: 15px;
+        color: rgb(189, 189, 189);
+        border-bottom: 2px solid transparent;
+        box-sizing: border-box;
+        cursor: pointer;
+    }
+    .menuItem:hover {
+        background-color: #141020;
+    }
     .page-header {
         position: relative;
         width: $innerWidth;
@@ -73,6 +129,9 @@
         height: 100%;
         display: flex;
         align-items: center;
+    }
+    a {
+        text-decoration: none!important;
     }
 </style>
 <style>

@@ -1,6 +1,15 @@
 <template>
     <el-main class="home-page">
-        <div>
+        <div class="fixed-width" style="display: flex;align-items: center;">
+            <div style="height: 100px; width: 100px;" class="avatar">
+                <img src="https://crypko.ai/static/images/DefaultProfile.svg" alt="avatar">
+            </div>
+            <div style="font-size: 14px;margin-left: 20px;">
+                <span style="color: #aaa;">tron address: </span>
+                <span style="cursor: pointer">TLxQvu9k12tvXt8XzDXHqRRv2wSXp3kpw7</span>
+            </div>
+        </div>
+        <div style="position:relative;">
             <div class="line">
                 <img style="width: 100%;" src="../assets/line2@2x.png" alt="">
             </div>
@@ -80,8 +89,8 @@
         </div>
         <div class="pagination">
             <el-pagination background
-                    layout="prev, pager, next"
-                    :total="50">
+                           layout="prev, pager, next"
+                           :total="50">
             </el-pagination>
         </div>
     </el-main>
@@ -90,6 +99,7 @@
 <script>
     import Card from '@/components/Card'
     import API from '@/api'
+    import { mapState } from 'vuex'
     export default {
         name: 'Market',
         components: {
@@ -150,8 +160,8 @@
                     attributes: "hasname,hasbio,cooldownready,dark skin,blush,smile,open mouth,hat,ribbon,glasses",
                     filters: "iteration:1~2,cooldown:ur|ssr|sr|r|n,price:1~2",
                     sort: "-id"
-                }
-                API.getMarketIdols(params).then(res => {
+                };
+                API.getMyIdols(params).then(res => {
                     this.loading = false;
                     if (res.code === 0) {
                         this.idolList = res.data;
@@ -159,14 +169,30 @@
                 })
             }
         },
-        created() {
-            this.getList();
+        created() {},
+        mounted() {},
+        computed: {
+            ...mapState([
+                'isLoginIn'
+            ])
         },
-        mounted() {
+        watch: {
+            isLoginIn(val) {
+                if(val) {
+                    this.getList();
+                } else {
+                    this.$router.push({
+                        path: '/market'
+                    })
+                }
+            }
         }
     }
 </script>
 <style lang="scss" scoped>
+    .avatar {
+        position: relative;
+    }
     .a-tag {
         color: rgb(189, 189, 189);
         background-color: $bgColor;
@@ -223,6 +249,7 @@
         width: $innerWidth;
         padding: 0 0 100px 0;
         margin: 0 auto;
+        color: #fff;
     }
 
     .home-header {

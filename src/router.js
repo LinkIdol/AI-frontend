@@ -13,7 +13,7 @@ export default new Router({
         {
             path: '/market',
             name: 'market',
-            component: () => import(/* webpackChunkName: "home" */ './views/Home.vue')
+            component: () => import(/* webpackChunkName: "market" */ './views/Home.vue')
         },
         {
             path: '/about',
@@ -24,9 +24,19 @@ export default new Router({
             component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
         },
         {
-            path: '/card',
+            path: '/card/:id',
             name: 'card',
             component: () => import(/* webpackChunkName: "card" */ './views/CardDetail.vue')
+        },
+        {
+            path: '/user',
+            name: 'user',
+            component: () => import(/* webpackChunkName: "user" */ './views/User.vue')
+        },
+        {
+            path: '/register',
+            name: 'register',
+            component: () => import(/* webpackChunkName: "register" */ './views/Register.vue')
         }
     ]
 })
