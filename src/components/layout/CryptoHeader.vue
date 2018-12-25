@@ -9,7 +9,7 @@
             </router-link>
             <div style="display: flex;">
                 <el-menu
-                        default-active="market"
+                        :default-active="currentPage"
                         mode="horizontal"
                         background-color="#191428"
                         text-color="#BDBDBD"
@@ -17,11 +17,11 @@
                         router
                         active-text-color="#ffffff">
                     <el-menu-item index="market" route="/market">
-                        市场
+                        {{$t('market')}}
                     </el-menu-item>
-                    <el-menu-item index="register" route="/register" v-if="!isLoginIn">
+                    <!--<el-menu-item index="register" route="/register" v-if="!isLoginIn">
                         注册
-                    </el-menu-item>
+                    </el-menu-item>-->
                     <el-menu-item index="user" route="/user" v-if="isLoginIn">
                         <font-awesome-icon :icon="['fas', 'user-circle']" size="lg"/>
                     </el-menu-item>
@@ -35,20 +35,40 @@
 <script>
     import API from '@/api'
     import { mapState } from 'vuex'
+    import util from '@/util/util'
     export default {
         name: 'CryptoHeader',
         data() {
             return {
+                currentPage: 'market'
             }
         },
         mounted() {
-            console.log(this.$route)
+            let href = window.location.href;
+            this.currentPage = href.substring(href.lastIndexOf('/') + 1, href.length);
         },
         methods: {
-            login() {
+            async login() {
+                if (!window.tronWeb) {
+                    this.$notify({
+                        title: '提示',
+                        message: '请先安装波场钱包插件',
+                        duration: 0
+                    });
+                } else {
+                    if (!window.tronWeb.ready) {
+                        this.$notify({
+                            title: '提示',
+                            message: '波场钱包请先解锁',
+                            duration: 0
+                        });
+                    }
+                }
+                const sign = await util.signMessage('tron idol');
+                console.log(sign, window.tronWeb);
                 API.login({
-                    address: '',
-                    sign: ''
+                    address: window.tronWeb.defaultAddress.base58,
+                    sign
                 }).then(res => {
                     console.log(res);
                 })
@@ -61,17 +81,17 @@
                 }).then(res => {
                     console.log(res);
                 })
-            },
-            toUser() {
-                this.$router.push({
-                    path: '/user'
-                })
             }
         },
         computed: {
             ...mapState([
                 'isLoginIn'
             ])
+        },
+        watch: {
+            '$router'(val) {
+                console.log(val)
+            }
         }
     }
 </script>

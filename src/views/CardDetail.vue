@@ -14,7 +14,7 @@
                     <div style="z-index: 2;display: flex;">
                         <div style="display: inline-block;margin-right: 16px;width: 256px;box-sizing: border-box;">
                             <div style="height: 47px;margin-bottom: 14px;display: flex;align-items: center;justify-content: center;">
-                                <span>第{{idol.Genes}}世代·Normal冷却状态</span>
+                                <span>第{{idol.Genes}}世代</span><!--·Normal冷却状态-->
                             </div>
                             <div style="height: 346px;display: flex;flex-direction: column;align-items: center;justify-content: center;">
                                 <div class="image-outer">
@@ -32,7 +32,7 @@
                                         <span>自我介绍</span>
                                     </div>
                                     <div>
-                                        <p>我是itzik家的MixR9，是MixR系列的第九代试验品，拥有白色的长发和湖蓝色的瞳孔，是人形AI私人助理哦~ 希望以后的生活中可以帮助到你，也希望可以和你好好相处哦~ KIRA~</p>
+                                        <p>{{idol.Bio || '暂无'}}</p>
                                     </div>
                                 </div>
                                 <div>
@@ -40,7 +40,7 @@
                                         <span>标签</span>
                                     </div>
                                     <div>
-                                        <span style="margin-right: 10px;">#AI</span> <span style="margin-right: 10px;">#MixR系列</span> <span>#个人助理</span>
+                                        <span class="labelContent" v-for="(item, i) in labels" :key="i">{{item}}</span>
                                     </div>
                                 </div>
                                 <div>
@@ -48,8 +48,7 @@
                                         <span>属性</span>
                                     </div>
                                     <div>
-                                        <span style="margin-right: 10px;">白发</span>
-                                        <span>蓝眼睛</span>
+                                        <span class="labelContent" v-for="(item, i) in attributes" :key="i">{{item}}</span>
                                     </div>
                                 </div>
                                 <div style="display: flex;">
@@ -59,12 +58,13 @@
                                     </div>
                                     <div>
                                         <div>冷却状态</div>
-                                        <div>Ready</div>
+                                        <div>{{idol.Cooldown}}</div>
                                     </div>
                                 </div>
                                 <div>
-                                    <font-awesome-icon :icon="['far', 'heart']" />
-                                    <span>173</span>
+                                    <font-awesome-icon style="cursor: pointer;" :icon="['far', 'heart']" v-if="idol.IsLike === 0" @click="like"/>
+                                    <font-awesome-icon style="cursor: pointer;" :icon="['fas', 'heart']" v-if="idol.IsLike === 1" @click="unlike"/>
+                                    <span style="margin-left: 10px;">{{idol.LikeCount}}</span>
                                 </div>
                             </div>
                         </div>
@@ -75,7 +75,7 @@
                 </div>
                 <div class="line">
                     <img src="../assets/detail-bg2.png" alt="">
-                    <p style="white-space: nowrap;color: #fff;margin-left: 10px;font-size: 14px;line-height: 24px;">所有者：Itzik</p>
+                    <p style="white-space: nowrap;color: #fff;margin-left: 10px;font-size: 14px;line-height: 24px;">所有者：{{idol.UserName}}</p>
                 </div>
             </div>
         </div>
@@ -97,17 +97,50 @@
         created() {
             this.id = this.$route.params.id;
             this.loading = true;
-            API.getIdol({tokenId: this.id}).then(res => {
-                this.loading = false;
-                if (res.code === 0) {
-                    this.idol = res.data;
-                }
-            })
+            this.getDetail();
         },
-        methods: {}
+        methods: {
+            getDetail() {
+                API.getIdol({tokenId: this.id}).then(res => {
+                    this.loading = false;
+                    if (res.code === 0) {
+                        this.idol = res.data;
+                    }
+                })
+            },
+            like() {
+                API.like({tokenId: this.idol.TokenId}).then(res => {
+                    if (res.code === 0) {
+                        this.idol.IsLike = 1;
+                        this.getDetail();
+                    }
+                })
+            },
+            unlike() {
+                API.unlike({tokenId: this.idol.TokenId}).then(res => {
+                    if (res.code === 0) {
+                        this.idol.IsLike = 0;
+                        this.getDetail();
+                    }
+                })
+            }
+        },
+        computed: {
+            labels() {
+                let labels = this.idol.Labels ? this.idol.Labels : '';
+                return labels.split(',')
+            },
+            attributes() {
+                let attributes = this.idol.Attributes ? this.idol.Attributes : '';
+                return attributes.split(',')
+            }
+        }
     }
 </script>
 <style lang="scss" scoped>
+    .labelContent+.labelContent {
+        margin-left: 10px;
+    }
     .image-outer {
         height: 150px;
         width: 150px;

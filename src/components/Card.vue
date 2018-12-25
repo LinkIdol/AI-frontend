@@ -3,7 +3,8 @@
         <div class="card-body" @click="toDetail">
             <div class="heart-icon-container" @click.stop>
                 <!--<img class="heart-img" alt="" @click.stop="like">-->
-                <font-awesome-icon :icon="['fas', 'heart']" class="heart-icon"/>
+                <font-awesome-icon :icon="['far', 'heart']" class="heart-icon" v-if="idol.IsLike === 0" @click.stop="like"/>
+                <font-awesome-icon :icon="['fas', 'heart']" class="heart-icon" v-if="idol.IsLike === 1" @click.stop="unlike"/>
             </div>
             <div class="body-top">
                 <span>{{idol.NickName}}</span>
@@ -18,8 +19,8 @@
                 <span>#{{idol.TokenId}}</span>
             </div>
         </div>
-        <div class="buy">
-            <span>购买</span>
+        <div class="buy" @click="buy">
+            <span>{{$t('buy')}}</span>
         </div>
     </div>
 </template>
@@ -27,6 +28,8 @@
 <script>
     import API from '@/api'
     import config from '@/api/config'
+    import KittyCore from '@/util/KittyCore.json'
+    import util from '@/util/util'
     export default {
         name: 'Card',
         props: {
@@ -64,8 +67,34 @@
             },
             like() {
                 API.like({tokenId: this.idol.TokenId}).then(res => {
-                    if (res.code === 0) {}
+                    if (res.code === 0) {
+                        console.log(res);
+                        this.idol.IsLike = 1;
+                    }
                 })
+            },
+            unlike() {
+                API.unlike({tokenId: this.idol.TokenId}).then(res => {
+                    if (res.code === 0) {
+                        console.log(res);
+                        this.idol.IsLike = 0;
+                    }
+                })
+            },
+            async buy() {
+                /*const tronWeb = window.tronWeb;
+                const contract = tronWeb.contract(KittyCore.abi, KittyCore.address);
+                contract.getuint256(1).call().then(resp => {
+                    console.log(resp)
+                })*/
+                const signMessage = await window.tronWeb.trx.sign(util.strToHex('tron idol'));
+                console.log(signMessage);
+                /*contract.teststore().send({
+                    shouldPollResponse: true,
+                    callValue: 2000000000,
+                }).then(res => {
+                    console.log('success', res)
+                })*/
             }
         }
     }

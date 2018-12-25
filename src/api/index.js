@@ -1,5 +1,6 @@
 import axios from 'axios'
 import config from './config'
+axios.defaults.withCredentials = true
 const instance = axios.create({
     baseURL: config.BASE_URL
 });

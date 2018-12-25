@@ -9,7 +9,7 @@
                 <span style="cursor: pointer">TLxQvu9k12tvXt8XzDXHqRRv2wSXp3kpw7</span>
             </div>
         </div>
-        <div style="position:relative;">
+        <div style="position: relative;">
             <div class="line">
                 <img style="width: 100%;" src="../assets/line2@2x.png" alt="">
             </div>
@@ -22,10 +22,9 @@
                             text-color="#BDBDBD"
                             active-text-color="#ffffff"
                             @select="handleSelect">
-                        <el-menu-item index="all">全部</el-menu-item>
-                        <el-menu-item index="forsale">待出售</el-menu-item>
-                        <el-menu-item index="rental">可租赁</el-menu-item>
-                        <el-menu-item index="new">最新</el-menu-item>
+                        <el-menu-item index="all">{{$t('all')}}</el-menu-item>
+                        <el-menu-item index="forsale">{{$t('for_sale')}}</el-menu-item>
+                        <el-menu-item index="rental">{{$t('rental')}}</el-menu-item>
                     </el-menu>
                     <div class="c-input">
                         <el-input
@@ -34,14 +33,17 @@
                         </el-input>
                     </div>
                 </div>
-                <div class="menu-container">
+                <div class="menu-container" onselectstart="return false;" >
                     <div class="menu-btn" :class="{'menu-btn-active': filterActive}" @click="filterActive=!filterActive">
                         <font-awesome-icon :icon="['fas', 'filter']" style="margin-right: 8px;"/>
                         <span>筛选</span>
                     </div>
-                    <div class="menu-btn">
+                    <div class="menu-btn" @click="sortBoxActive = !sortBoxActive">
                         <font-awesome-icon :icon="['fas', 'bars']" style="margin-right: 8px;"/>
-                        <span>ID降序</span>
+                        <span>{{sort.name}}</span>
+                    </div>
+                    <div class="sort-box" v-if="sortBoxActive">
+                        <div v-for="(item, i) in sorts" :key="i" @click="sortChange(item)">{{item.name}}</div>
                     </div>
                 </div>
             </div>
@@ -49,48 +51,52 @@
                 <div class="filterRow">
                     <span style="margin-right: 10px">头发颜色：</span>
                     <span class="a-tag"
-                          v-for="(value, key, index) in hairColors"
-                          :class="{'a-tag-active': value.active}"
-                          :key="index"
-                          @click="activeAttr('hairColors', key)">{{value.name}}
-                </span>
+                          v-for="(item, i) in hairColors"
+                          :class="{'a-tag-active': item.active}"
+                          :key="i"
+                          @click="activeAttr('hairColors', i)">{{item.name}}
+                    </span>
                 </div>
                 <div class="filterRow">
                     <span style="margin-right: 10px">眼睛颜色：</span>
                     <span class="a-tag"
-                          v-for="(value, key, index) in eyeColors"
-                          :class="{'a-tag-active': value.active}"
-                          :key="index"
-                          @click="activeAttr('eyeColors', key)">{{value.name}}
-                </span>
+                          v-for="(item, i) in eyeColors"
+                          :class="{'a-tag-active': item.active}"
+                          :key="i"
+                          @click="activeAttr('eyeColors', i)">{{item.name}}
+                    </span>
                 </div>
                 <div class="filterRow">
                     <span style="margin-right: 10px">发型：</span>
                     <span class="a-tag"
-                          v-for="(value, key, index) in hairStyles"
-                          :class="{'a-tag-active': value.active}"
-                          :key="index"
-                          @click="activeAttr('hairStyles', key)">{{value.name}}
-                </span>
+                          v-for="(item, i) in hairStyles"
+                          :class="{'a-tag-active': item.active}"
+                          :key="i"
+                          @click="activeAttr('hairStyles', i)">{{item.name}}
+                    </span>
                 </div>
                 <div class="filterRow">
                     <span style="margin-right: 10px">特征：</span>
                     <span class="a-tag"
-                          v-for="(value, key, index) in attributes"
-                          :class="{'a-tag-active': value.active}"
-                          :key="index"
-                          @click="activeAttr('attributes', key)">{{value.name}}
-                </span>
+                          v-for="(item, i) in attributes"
+                          :class="{'a-tag-active': item.active}"
+                          :key="i"
+                          @click="activeAttr('attributes', i)">{{item.name}}
+                    </span>
                 </div>
             </div>
         </div>
         <div class="fixed-width cardContainer" v-loading="loading" element-loading-background="#191428">
             <Card v-for="(item, i) in idolList" :key="i" class="idolCard" :idol="item" :class="{'idolCard-noMargin': (i+1)%4 === 0}"></Card>
+            <div class="no-data" v-if="idolList.length <= 0">
+                <span>(|||ﾟдﾟ) 找不到数据~~去 </span><router-link to="/market">市场</router-link><span> 看一下吧~~</span>
+            </div>
         </div>
-        <div class="pagination">
+        <div class="pagination" v-if="pageCount > 0">
             <el-pagination background
                            layout="prev, pager, next"
-                           :total="50">
+                           :page-size="pageSize"
+                           :total="pageCount" @current-change="handlePageChange">
             </el-pagination>
         </div>
     </el-main>
@@ -99,7 +105,6 @@
 <script>
     import Card from '@/components/Card'
     import API from '@/api'
-    import { mapState } from 'vuex'
     export default {
         name: 'Market',
         components: {
@@ -110,39 +115,46 @@
                 idolList: [],
                 pageIndex: 1,
                 pageSize: 12,
+                pageCount: 0,
                 loading: false,
                 category: 'all',
-                hairColors: {
-                    blonde: {name: '金色', active: false},
-                    brown: {name: '棕色', active: false},
-                    black: {name: '黑色', active: false},
-                    blue: {name: '蓝色', active: false},
-                },
-                eyeColors: {
-                    brown: {name: '棕色', active: false},
-                    black: {name: '黑色', active: false},
-                },
-                hairStyles: {
-                    'long hair': {name: '长', active: false},
-                    'short hair': {name: '短', active: false},
-                },
-                attributes: {
-                    'cooldownready': {name: '短', active: false},
-                    'dark skin': {name: '黑色肌肤', active: false},
-                    'blush': {name: '脸红', active: false},
-                    'smile': {name: '微笑', active: false},
-                    'open mouth': {name: '张嘴', active: false},
-                    'hat': {name: '帽子', active: false},
-                    'ribbon': {name: '丝带', active: false},
-                    'glasses': {name: '眼镜', active: false},
-                },
-                filterActive: false
+                hairColors: [
+                    {id: 'blonde', name: '金色', active: false},
+                    {id: 'brown', name: '棕色', active: false},
+                    {id: 'black', name: '黑色', active: false},
+                    {id: 'blue', name: '蓝色', active: false},
+                ],
+                eyeColors: [
+                    {id: 'brown', name: '棕色', active: false},
+                    {id: 'black', name: '黑色', active: false},
+                ],
+                hairStyles: [
+                    {id: 'long hair', name: '长', active: false},
+                    {id: 'short hair', name: '短', active: false},
+                ],
+                attributes: [
+                    {id: 'cooldownready', name: '短', active: false},
+                    {id: 'dark skin', name: '黑色肌肤', active: false},
+                    {id: 'blush', name: '脸红', active: false},
+                    {id: 'smile', name: '微笑', active: false},
+                    {id: 'open mouth', name: '张嘴', active: false},
+                    {id: 'hat', name: '帽子', active: false},
+                    {id: 'ribbon', name: '丝带', active: false},
+                    {id: 'glasses', name: '眼镜', active: false},
+                ],
+                sorts: [
+                    {id: '-id', name : 'ID降序'},
+                    {id: '+id', name : 'ID升序'}
+                ],
+                sort: {id: '-id', name : 'ID降序'},
+                filterActive: false,
+                sortBoxActive: false
             }
         },
         methods: {
-            activeAttr(attr, key) {
-                console.log(attr, key);
-                this[attr][key].active = !this[attr][key].active
+            activeAttr(attr, i) {
+                this[attr][i].active = !this[attr][i].active;
+                this.getList();
             },
             handleSelect(key) {
                 this.category = key;
@@ -150,48 +162,81 @@
             },
             getList() {
                 this.loading = true;
+                let hairColors = [];
+                this.hairColors.forEach(item => {if (item.active) hairColors.push(item.id)})
+                let eyeColors = [];
+                this.eyeColors.forEach(item => {if (item.active) eyeColors.push(item.id)})
+                let hairStyles = [];
+                this.hairStyles.forEach(item => {if (item.active) hairStyles.push(item.id)})
+                let attributes = [];
+                this.attributes.forEach(item => {if (item.active) attributes.push(item.id)})
                 let params = {
                     page: this.pageIndex,
                     pageSize: this.pageSize,
                     category: this.category,
-                    hairColors: "blonde,brown,black,blue",
-                    eyeColors: "brown,black",
-                    hairStyles: "long hair,short hair",
-                    attributes: "hasname,hasbio,cooldownready,dark skin,blush,smile,open mouth,hat,ribbon,glasses",
-                    filters: "iteration:1~2,cooldown:ur|ssr|sr|r|n,price:1~2",
-                    sort: "-id"
+                    hairColors: hairColors.join(','),
+                    eyeColors: eyeColors.join(','),
+                    hairStyles: hairStyles.join(','),
+                    attributes: attributes.join(','),
+                    filters: '',
+                    sort: this.sort.id
                 };
-                API.getMyIdols(params).then(res => {
+                let requestParams = {};
+                for (let item in params) {if (params[item]) requestParams[item] = params[item]}
+                API.getMyIdols(requestParams).then(res => {
                     this.loading = false;
                     if (res.code === 0) {
-                        this.idolList = res.data;
+                        this.idolList = res.data.rows;
+                        this.pageCount = res.data.count;
                     }
                 })
+            },
+            handlePageChange(i) {
+                console.log(i);
+                this.pageIndex = i;
+                this.getList();
+            },
+            sortChange(item) {
+                this.sortBoxActive = false;
+                this.sort = item;
+                this.getList();
             }
         },
-        created() {},
-        mounted() {},
-        computed: {
-            ...mapState([
-                'isLoginIn'
-            ])
+        created() {
+            this.getList();
         },
-        watch: {
-            isLoginIn(val) {
-                if(val) {
-                    this.getList();
-                } else {
-                    this.$router.push({
-                        path: '/market'
-                    })
-                }
-            }
+        mounted() {
         }
     }
 </script>
 <style lang="scss" scoped>
-    .avatar {
-        position: relative;
+    a {
+        text-decoration: none;
+        color: #409EFF;
+    }
+    .no-data {
+        width: 100%;
+        text-align: center;
+        color: #BDBDBD;
+    }
+    .sort-box {
+        position: absolute;
+        right: 0;
+        top: 25px;
+        z-index: 10;
+        color: #BDBDBD;
+        font-size: 14px;
+        background-color: #191428;
+        box-shadow: 0 5px 5px -3px rgba(0,0,0,.2), 0 8px 10px 1px rgba(0,0,0,.14), 0 3px 14px 2px rgba(0,0,0,.12);
+    }
+    .sort-box div {
+        padding: 10px;
+        min-width: 100px;
+    }
+    .sort-box div:hover {
+        background-color: #383838;
+        color: #fff;
+        cursor: pointer;
     }
     .a-tag {
         color: rgb(189, 189, 189);
@@ -235,7 +280,6 @@
         justify-content: flex-start;
         flex-wrap: wrap;
         margin: 3rem auto 1rem auto;
-        min-height: 200px;
     }
 
     .line {
@@ -269,6 +313,7 @@
     .menu-container {
         display: flex;
         margin-top: 10px;
+        position: relative;
     }
     .menu-btn {
         color: #BDBDBD;

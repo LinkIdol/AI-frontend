@@ -28,6 +28,16 @@
                 <p><a href="https://twitter.com/">twitter</a></p>
                 <p><a href="https://www.youtube.com/">youtube</a></p>
             </div>
+            <div class="langContainer">
+                <el-select v-model="lang" placeholder="请选择" @change="langChange">
+                    <el-option
+                            v-for="item in LangOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                    </el-option>
+                </el-select>
+            </div>
         </div>
         <div class="copyRight">
             <span>Copyright © 2018 CryptoGirls Team </span>
@@ -40,11 +50,25 @@ export default {
   name: 'CryptoFooter',
   data() {
     return {
+        LangOptions: [{
+            value: 'en',
+            label: 'English'
+        }, {
+            value: 'zh',
+            label: '简体中文'
+        }, {
+            value: 'zh_tw',
+            label: '繁體中文'
+        }],
+        lang: 'zh'
     }
   },
   mounted() {
   },
   methods: {
+      langChange(lang) {
+          this.$i18n.locale = lang;
+      }
   }
 }
 </script>
@@ -83,5 +107,15 @@ export default {
 
     a {
         text-decoration: none;
+    }
+</style>
+<style lang="scss">
+    .langContainer .el-input__inner {
+        background-color: rgb(12, 7, 28)!important;
+        color: #BDBDBD;
+        border: none;
+    }
+    .langContainer .el-select {
+        border-bottom: 1px solid #BDBDBD;
     }
 </style>

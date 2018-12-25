@@ -15,6 +15,7 @@
     import CryptoHeader from './components/layout/CryptoHeader'
     import CryptoFooter from './components/layout/CryptoFooter'
     import API from '@/api'
+    import util from '@/util/util'
 
     export default {
         name: 'app',
@@ -23,7 +24,67 @@
             CryptoFooter
         },
         mounted() {
-            /*window.onload = () => {
+            /*window.addEventListener('load', () => {
+                if (typeof tronPay !== 'undefined') {
+                    tronWeb = tronPay.tronWeb || tronWeb
+                    if (tronWeb.isTronPay && tronWeb.ready) {
+                        this.$store.commit('updateLogin', true)
+                        let address = window.tronWeb.defaultAddress.hex;
+                        API.login({
+                            address: address,
+                            sign: ''
+                        }).then(res => {
+                            console.log(res);
+                        });
+                        /!*window.tronWeb.trx.getAccount(address).then((res) => {
+                            console.log(res);
+                        })*!/
+                    } else {
+                        this.$notify({
+                            title: '提示',
+                            message: '波场钱包请先解锁',
+                            duration: 0
+                        });
+                        this.$store.commit('updateLogin', false)
+                    }
+                } else {
+                    this.$notify({
+                        title: '提示',
+                        message: '请先安装波场钱包插件',
+                        duration: 0
+                    });
+                    this.$store.commit('updateLogin', false)
+                }
+            })*/
+            /*const waitForGlobal = async () => {
+                if (window.tronWeb) {
+                    const tronWeb = window.tronWeb
+                    const nodes = await tronWeb.isConnected()
+                    const connected = !Object.entries(nodes).map(([key, value]) => {
+                        if (!value) {
+                            console.error(`Error: ${key} is not connected`)
+                        }
+                        return value
+                    }).includes(false)
+                    if (connected) {
+                        console.log('connected')
+                    } else {
+                        console.error('Error: TRON node is not connected')
+                        console.error('wait for tronLink')
+                        setTimeout(async () => {
+                            await waitForGlobal()
+                        }, 100)
+                    }
+                } else {
+                    console.error('wait for tronLink')
+                    setTimeout(async () => {
+                        await waitForGlobal()
+                    }, 100)
+                }
+            };
+
+            waitForGlobal().then()*/
+            window.onload = () => {
                 if (!window.tronWeb) {
                     this.$notify({
                         title: '提示',
@@ -44,17 +105,18 @@
                         this.$store.commit('updateLogin', true)
                         let address = window.tronWeb.defaultAddress.hex;
                         API.login({
-                            address: address,
-                            sign: ''
+                            address: address
                         }).then(res => {
-                            console.log(res);
+                            if (res.code === 0) {
+                                util.setCookie('access_token', res.data.access_token);
+                            }
                         });
                         window.tronWeb.trx.getAccount(address).then((res) => {
                             console.log(res);
                         })
                     }
                 }
-            }*/
+            }
             /*api.setTronWeb(window.tronWeb)
 
             api.contract.allOf(1).call().then(resp => {
