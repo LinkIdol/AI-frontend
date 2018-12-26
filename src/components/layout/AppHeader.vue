@@ -1,5 +1,5 @@
 <template>
-    <el-header class="page-header" style="height: auto;">
+    <div>
         <div class="line">
             <img src="@/assets/line1@2x.png" alt="" style="width: 100%">
         </div>
@@ -29,15 +29,13 @@
                 <div v-if="!isLoginIn" class="menuItem" @click="login">登录</div>
             </div>
         </div>
-    </el-header>
+    </div>
 </template>
 
 <script>
-    import API from '@/api'
     import { mapState } from 'vuex'
-    import util from '@/util/util'
     export default {
-        name: 'CryptoHeader',
+        name: 'AppHeader',
         data() {
             return {
                 currentPage: 'market'
@@ -51,30 +49,39 @@
             async login() {
                 if (!window.tronWeb) {
                     this.$notify({
-                        title: '提示',
-                        message: '请先安装波场钱包插件',
-                        duration: 0
+                        type: 'info',
+                        title: '温馨提示',
+                        message: '请先安装波场钱包插件'
                     });
+                    this.$store.commit('updateLogin', false)
                 } else {
                     if (!window.tronWeb.ready) {
                         this.$notify({
-                            title: '提示',
-                            message: '波场钱包请先解锁',
-                            duration: 0
+                            type: 'info',
+                            title: '温馨提示',
+                            message: '请先安装波场钱包插件'
+                        });
+                        this.$store.commit('updateLogin', false)
+                    } else {
+                        this.$notify({
+                            type: 'success',
+                            title: '温馨提示',
+                            message: '登录成功'
+                        });
+                        this.$store.commit('updateLogin', true)
+                        let address = window.tronWeb.defaultAddress.hex;
+                        this.API.login({
+                            address: address
+                        }).then(res => {
+                            if (res.code === 0) {
+                                this.util.setCookie('access_token', res.data.access_token);
+                            }
                         });
                     }
                 }
-                const sign = await util.signMessage('tron idol');
-                console.log(sign, window.tronWeb);
-                API.login({
-                    address: window.tronWeb.defaultAddress.base58,
-                    sign
-                }).then(res => {
-                    console.log(res);
-                })
             },
             register() {
-                API.register({
+                this.API.register({
                     address: 'TVjmtiAVdbox9LYtZ7eu8Bq7mHJFZCZ3dg',
                     name: 'chenhao',
                     sign: 'eff7d5dba32b4da32d9a67a519434d3f'

@@ -46,31 +46,31 @@
 </template>
 
 <script>
-export default {
-  name: 'CryptoFooter',
-  data() {
-    return {
-        LangOptions: [{
-            value: 'en',
-            label: 'English'
-        }, {
-            value: 'zh',
-            label: '简体中文'
-        }, {
-            value: 'zh_tw',
-            label: '繁體中文'
-        }],
-        lang: 'zh'
+    export default {
+        name: 'AppFooter',
+        data() {
+            return {
+                LangOptions: [{
+                    value: 'en',
+                    label: 'English'
+                }, {
+                    value: 'zh',
+                    label: '简体中文'
+                }, {
+                    value: 'zh_tw',
+                    label: '繁體中文'
+                }],
+                lang: 'zh'
+            }
+        },
+        mounted() {
+        },
+        methods: {
+            langChange(lang) {
+                this.$i18n.locale = lang;
+            }
+        }
     }
-  },
-  mounted() {
-  },
-  methods: {
-      langChange(lang) {
-          this.$i18n.locale = lang;
-      }
-  }
-}
 </script>
 
 <style lang="scss" scoped>
@@ -111,10 +111,11 @@ export default {
 </style>
 <style lang="scss">
     .langContainer .el-input__inner {
-        background-color: rgb(12, 7, 28)!important;
+        background-color: rgb(12, 7, 28) !important;
         color: #BDBDBD;
         border: none;
     }
+
     .langContainer .el-select {
         border-bottom: 1px solid #BDBDBD;
     }

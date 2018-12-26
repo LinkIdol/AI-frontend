@@ -96,7 +96,6 @@
 
 <script>
     import Card from '@/components/Card'
-    import API from '@/api'
     export default {
         name: 'Market',
         components: {
@@ -175,7 +174,7 @@
                 };
                 let requestParams = {};
                 for (let item in params) {if (params[item]) requestParams[item] = params[item]}
-                API.getMarketIdols(requestParams).then(res => {
+                this.API.getMarketIdols(requestParams).then(res => {
                     this.loading = false;
                     if (res.code === 0) {
                         this.idolList = res.data.rows;
@@ -195,9 +194,9 @@
             }
         },
         created() {
-            this.getList();
         },
         mounted() {
+            this.getList();
         }
     }
 </script>

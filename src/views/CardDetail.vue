@@ -18,7 +18,7 @@
                             </div>
                             <div style="height: 346px;display: flex;flex-direction: column;align-items: center;justify-content: center;">
                                 <div class="image-outer">
-                                    <img :src="IMG_SERVER+idol.Pic" style="width: 100%;">
+                                    <img :src="CONFIG.IMG_SERVER+idol.Pic" style="width: 100%;">
                                 </div>
                                 <div style="margin-top: 20px;">
                                     <span>{{idol.NickName}}#{{idol.TokenId}}</span>
@@ -82,14 +82,11 @@
     </div>
 </template>
 <script>
-    import API from '@/api'
-    import config from '@/api/config'
     export default {
         name: 'Card',
         data() {
             return {
                 idol: {},
-                IMG_SERVER: config.IMG_SERVER,
                 id: '',
                 loading: false
             }
@@ -101,7 +98,7 @@
         },
         methods: {
             getDetail() {
-                API.getIdol({tokenId: this.id}).then(res => {
+                this.API.getIdol({tokenId: this.id}).then(res => {
                     this.loading = false;
                     if (res.code === 0) {
                         this.idol = res.data;
@@ -109,7 +106,7 @@
                 })
             },
             like() {
-                API.like({tokenId: this.idol.TokenId}).then(res => {
+                this.API.like({tokenId: this.idol.TokenId}).then(res => {
                     if (res.code === 0) {
                         this.idol.IsLike = 1;
                         this.getDetail();
@@ -117,7 +114,7 @@
                 })
             },
             unlike() {
-                API.unlike({tokenId: this.idol.TokenId}).then(res => {
+                this.API.unlike({tokenId: this.idol.TokenId}).then(res => {
                     if (res.code === 0) {
                         this.idol.IsLike = 0;
                         this.getDetail();

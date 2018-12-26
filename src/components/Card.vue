@@ -2,15 +2,14 @@
     <div class="idol">
         <div class="card-body" @click="toDetail">
             <div class="heart-icon-container" @click.stop>
-                <!--<img class="heart-img" alt="" @click.stop="like">-->
-                <font-awesome-icon :icon="['far', 'heart']" class="heart-icon" v-if="idol.IsLike === 0" @click.stop="like"/>
-                <font-awesome-icon :icon="['fas', 'heart']" class="heart-icon" v-if="idol.IsLike === 1" @click.stop="unlike"/>
+                <font-awesome-icon :icon="['far', 'heart']" v-if="idol.IsLike === 0" @click.stop="like"/>
+                <font-awesome-icon :icon="['fas', 'heart']" v-if="idol.IsLike === 1" @click.stop="unlike"/>
             </div>
             <div class="body-top">
                 <span>{{idol.NickName}}</span>
             </div>
             <div class="image-inner">
-                <img :src="IMG_SERVER + idol.Pic" class="avatar-img">
+                <img :src="CONFIG.IMG_SERVER + idol.Pic" class="avatar-img">
             </div>
             <div class="body-middle">
                 <span>第{{idol.Genes}}世代 · R</span>
@@ -26,10 +25,6 @@
 </template>
 
 <script>
-    import API from '@/api'
-    import config from '@/api/config'
-    import KittyCore from '@/util/KittyCore.json'
-    import util from '@/util/util'
     export default {
         name: 'Card',
         props: {
@@ -54,7 +49,6 @@
         },
         data() {
             return {
-                IMG_SERVER: config.IMG_SERVER
             }
         },
         mounted() {
@@ -66,15 +60,22 @@
                 })
             },
             like() {
-                API.like({tokenId: this.idol.TokenId}).then(res => {
+                this.API.like({tokenId: this.idol.TokenId}).then(res => {
                     if (res.code === 0) {
                         console.log(res);
                         this.idol.IsLike = 1;
+                    } else {
+                        this.$notify({
+                            type: 'error',
+                            title: '温馨提示',
+                            message: '点赞失败',
+                            duration: 2000
+                        });
                     }
                 })
             },
             unlike() {
-                API.unlike({tokenId: this.idol.TokenId}).then(res => {
+                this.API.unlike({tokenId: this.idol.TokenId}).then(res => {
                     if (res.code === 0) {
                         console.log(res);
                         this.idol.IsLike = 0;
@@ -87,8 +88,6 @@
                 contract.getuint256(1).call().then(resp => {
                     console.log(resp)
                 })*/
-                const signMessage = await window.tronWeb.trx.sign(util.strToHex('tron idol'));
-                console.log(signMessage);
                 /*contract.teststore().send({
                     shouldPollResponse: true,
                     callValue: 2000000000,
@@ -103,17 +102,6 @@
 <style lang="scss" scoped>
     $border-color: #656DF2;
     $width: 150px;
-    /*.heart-img {
-        width: 16px;
-        height: auto;
-        content: url("../assets/heart.svg");
-    }
-    .heart-img:hover {
-        content: url("../assets/heart-fill.svg");
-    }*/
-    .heart-icon:hover {
-        color: $bgColor;
-    }
     .idol {
         position: relative;
         font-size: 14px;
