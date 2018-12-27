@@ -91,9 +91,9 @@
             }
         },
         computed: {
-            ...mapState([
-                'isLoginIn'
-            ])
+            ...mapState({
+                'isLoginIn': state => state.tron.isLoginIn
+            })
         },
         watch: {
             '$router'(val) {

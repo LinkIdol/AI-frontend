@@ -1,4 +1,4 @@
-import abi from './abi.json'
+import abi from './json/abi.json'
 
 
 const api = {

@@ -83,17 +83,13 @@
                 })
             },
             async buy() {
-                /*const tronWeb = window.tronWeb;
-                const contract = tronWeb.contract(KittyCore.abi, KittyCore.address);
-                contract.getuint256(1).call().then(resp => {
-                    console.log(resp)
-                })*/
-                /*contract.teststore().send({
-                    shouldPollResponse: true,
-                    callValue: 2000000000,
-                }).then(res => {
-                    console.log('success', res)
-                })*/
+                this.$store.state.web3.contractInstance().bet('2', {
+                    gas: 300000,
+                    value: this.$store.state.web3.web3.web3Instance().toWei('0.001', 'ether'),
+                    from: this.$store.state.web3.web3.coinbase
+                }, (err, result) => {
+                    console.log(err, result);
+                })
             }
         }
     }

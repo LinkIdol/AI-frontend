@@ -40,7 +40,7 @@
             </div>
         </div>
         <div class="copyRight">
-            <span>Copyright © 2018 CryptoGirls Team </span>
+            <span> Copyright © 2018 CryptoGirls Team </span> <span> , Powered by Snark AI </span>
         </div>
     </div>
 </template>

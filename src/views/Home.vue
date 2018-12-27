@@ -197,7 +197,12 @@
         },
         mounted() {
             this.getList();
-        }
+            console.log('dispatching getContractInstance')
+            this.$store.dispatch('getContractInstance')
+        },
+        beforeCreate () {
+            this.$store.dispatch('registerWeb3')
+        },
     }
 </script>
 <style lang="scss" scoped>

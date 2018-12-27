@@ -50,6 +50,9 @@
                                 this.util.setCookie('access_token', res.data.access_token);
                             }
                         });
+                        window.tronWeb.trx.getBalance(address).then(res => {
+                            console.log(res);
+                        });
                         window.tronWeb.trx.getAccount(address).then((res) => {
                             console.log(res);
                         })
@@ -58,6 +61,11 @@
             }
         },
         methods: {
+            async getBalance(address) {
+                    const userBalance = await window.tronWeb.trx.getBalance(address);
+                    console.log(`User's balance is: ${ userBalance }`);
+                    return userBalance
+            }
         }
     }
 </script>

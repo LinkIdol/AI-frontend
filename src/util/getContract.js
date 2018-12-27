@@ -1,4 +1,4 @@
-import abi from './KittyCore.json'
+import abi from './json/casinoContract.json'
 
 let getContract = new Promise(function (resolve, reject) {
     let web3 = window.web3;

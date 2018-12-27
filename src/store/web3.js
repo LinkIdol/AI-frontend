@@ -1,14 +1,9 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import getContract from './util/getContract'
-import getWeb3 from './util/getWeb3'
-import pollWeb3 from './util/pollWeb3'
+import getContract from '../util/getContract'
+import getWeb3 from '../util/getWeb3'
+import pollWeb3 from '../util/pollWeb3'
 
-Vue.use(Vuex)
-
-export default new Vuex.Store({
+const web3 = {
     state: {
-        isLoginIn: false,
         web3: {
             isInjected: false,
             web3Instance: null,
@@ -20,15 +15,6 @@ export default new Vuex.Store({
         contractInstance: null
     },
     mutations: {
-        updateLogin(state, data) {
-            state.isLoginIn = data;
-        },
-        updateState(state, data) {
-            state = {
-                ...state,
-                data
-            }
-        },
         registerWeb3Instance (state, payload) {
             console.log('registerWeb3instance Mutation being executed', payload)
             let result = payload
@@ -70,5 +56,9 @@ export default new Vuex.Store({
                 commit('registerContractInstance', result)
             }).catch(e => console.log(e))
         }
+    },
+    getters: {
+
     }
-})
+}
+export default web3
