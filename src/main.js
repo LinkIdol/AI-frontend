@@ -5,7 +5,7 @@ import store from './store/index'
 import './plugins/element.js'
 import {library} from '@fortawesome/fontawesome-svg-core'
 import {faHeart, faFilter, faBars, faUserCircle} from '@fortawesome/free-solid-svg-icons'
-import {faHeart as farHeart} from '@fortawesome/free-regular-svg-icons'
+import {faHeart as farHeart, faCopy} from '@fortawesome/free-regular-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
 import config from '@/api/config'
 import util from '@/util/util'
@@ -13,7 +13,7 @@ import API from '@/api'
 import i18n from '@/i18n';
 /*import { Notification } from 'element-ui';*/
 
-library.add(faHeart, farHeart, faFilter, faBars, faUserCircle)
+library.add(faHeart, farHeart, faFilter, faBars, faUserCircle, faCopy)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 

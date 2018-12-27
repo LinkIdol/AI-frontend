@@ -4,7 +4,7 @@
             <div class="detail-container">
                 <div class="detail-main">
                     <div style="margin-right: 40px;">
-                        <div class="share">
+                        <div class="share" @click="showShare=true">
                             <span>share</span>
                         </div>
                     </div>
@@ -58,7 +58,7 @@
                                     </div>
                                     <div>
                                         <div>冷却状态</div>
-                                        <div>{{idol.Cooldown}}</div>
+                                        <div>{{coolDown[idol.Cooldown]}}</div>
                                     </div>
                                 </div>
                                 <div>
@@ -79,6 +79,10 @@
                 </div>
             </div>
         </div>
+        <el-dialog title="分享到社交网络" :visible.sync="showShare" width="400px" class="shareDialog">
+            <input type="text" class="copyInput" :value="currentHref" readonly="readonly">
+            <font-awesome-icon size="lg" class="copyIcon" :icon="['far', 'copy']" @click="copyText"/>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -88,7 +92,16 @@
             return {
                 idol: {},
                 id: '',
-                loading: false
+                loading: false,
+                showShare: false,
+                coolDown: {
+                    "4":"Ultra Rapid",
+                    "3":"Specially Super Rapid",
+                    "2":"Super Rapid",
+                    "1":"Rapid",
+                    "0":"Normal",
+                },
+                currentHref: window.location.href
             }
         },
         created() {
@@ -97,6 +110,15 @@
             this.getDetail();
         },
         methods: {
+            copyText() {
+                let e = document.querySelector('.copyInput');
+                e.select();
+                document.execCommand('Copy');
+                this.$message({
+                    message: '复制成功',
+                    type: 'success'
+                });
+            },
             getDetail() {
                 this.API.getIdol({tokenId: this.id}).then(res => {
                     this.loading = false;
@@ -135,6 +157,21 @@
     }
 </script>
 <style lang="scss" scoped>
+    .copyIcon {
+        cursor: pointer;
+        float: right;
+        &:hover {
+            color: #656DF0;
+        }
+    }
+    .copyInput {
+        border: none;
+        font-size: 16px;
+        color: #606266;
+        width: 90%;
+        outline: none;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+    }
     .labelContent+.labelContent {
         margin-left: 10px;
     }

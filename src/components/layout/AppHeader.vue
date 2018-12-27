@@ -38,7 +38,7 @@
         name: 'AppHeader',
         data() {
             return {
-                currentPage: 'market'
+                currentPage: ''
             }
         },
         mounted() {
@@ -59,7 +59,7 @@
                         this.$notify({
                             type: 'info',
                             title: '温馨提示',
-                            message: '请先安装波场钱包插件'
+                            message: '波场钱包请先解锁'
                         });
                         this.$store.commit('updateLogin', false)
                     } else {
