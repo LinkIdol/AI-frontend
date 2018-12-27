@@ -23,49 +23,10 @@
             AppFooter
         },
         mounted() {
-            window.onload = () => {
-                if (!window.tronWeb) {
-                    this.$notify({
-                        title: '提示',
-                        message: '请先安装波场钱包插件',
-                        duration: 0
-                    });
-                    this.$store.commit('updateLogin', false)
-                } else {
-                    console.log(window.tronWeb)
-                    if (!window.tronWeb.ready) {
-                        this.$notify({
-                            title: '提示',
-                            message: '波场钱包请先解锁',
-                            duration: 0
-                        });
-                        this.$store.commit('updateLogin', false)
-                    } else {
-                        this.$store.commit('updateLogin', true)
-                        let address = window.tronWeb.defaultAddress.hex;
-                        this.API.login({
-                            address: address
-                        }).then(res => {
-                            if (res.code === 0) {
-                                this.util.setCookie('access_token', res.data.access_token);
-                            }
-                        });
-                        window.tronWeb.trx.getBalance(address).then(res => {
-                            console.log(res);
-                        });
-                        window.tronWeb.trx.getAccount(address).then((res) => {
-                            console.log(res);
-                        })
-                    }
-                }
-            }
         },
         methods: {
-            async getBalance(address) {
-                    const userBalance = await window.tronWeb.trx.getBalance(address);
-                    console.log(`User's balance is: ${ userBalance }`);
-                    return userBalance
-            }
+        },
+        created() {
         }
     }
 </script>

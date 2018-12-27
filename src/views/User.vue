@@ -1,12 +1,18 @@
 <template>
     <el-main class="home-page">
         <div class="fixed-width" style="display: flex;align-items: center;">
-            <div style="height: 100px; width: 100px;" class="avatar">
-                <img src="https://crypko.ai/static/images/DefaultProfile.svg" alt="avatar">
+            <div style="height: 100px; width: 100px;position: relative;" class="avatar">
+                <img src="@/assets/logo.png" alt="avatar" class="idol-avatar">
             </div>
-            <div style="font-size: 14px;margin-left: 20px;">
-                <span style="color: #aaa;">tron address: </span>
-                <span style="cursor: pointer">TLxQvu9k12tvXt8XzDXHqRRv2wSXp3kpw7</span>
+            <div>
+                <div style="font-size: 14px;margin-left: 20px;">
+                    <span style="color: #aaa;">tron address: </span>
+                    <span style="cursor: pointer">{{coinbase}}</span>
+                </div>
+                <div style="font-size: 14px;margin-left: 20px;">
+                    <span style="color: #aaa;">balance: </span>
+                    <span>{{balance}} trx</span>
+                </div>
             </div>
         </div>
         <div style="position: relative;">
@@ -86,8 +92,17 @@
                 </div>
             </div>
         </div>
+        <!--<div style="margin-top: 20px;">
+            <el-button plain style="float: right;">繁殖</el-button>
+        </div>-->
         <div class="fixed-width cardContainer" v-loading="loading" element-loading-background="#191428">
-            <Card v-for="(item, i) in idolList" :key="i" class="idolCard" :idol="item" :class="{'idolCard-noMargin': (i+1)%4 === 0}"></Card>
+            <Card v-for="(item, i) in idolList"
+                  :key="i" class="idolCard"
+                  :idol="item"
+                  :canBuy="false"
+                  :canFav="false"
+                  :class="{'idolCard-noMargin': (i+1)%4 === 0}">
+            </Card>
             <div class="no-data" v-if="idolList.length <= 0">
                 <span>(|||ﾟдﾟ) 找不到数据~~去 </span><router-link to="/market">市场</router-link><span> 看一下吧~~</span>
             </div>
@@ -104,8 +119,9 @@
 
 <script>
     import Card from '@/components/Card'
+    import { mapState } from 'vuex'
     export default {
-        name: 'Market',
+        name: 'User',
         components: {
             Card
         },
@@ -202,13 +218,32 @@
             }
         },
         created() {
-            this.getList();
         },
         mounted() {
+            this.getList();
+        },
+        computed: {
+            ...mapState({
+                isInjected: state => state.tron.tron.isInjected,
+                coinbase: state => state.tron.tron.coinbase,
+                balance: state => state.tron.tron.balance
+            })
         }
     }
 </script>
 <style lang="scss" scoped>
+    .idol-avatar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: auto;
+        z-index: 1;
+        transition-duration: .3s;
+        transition-property: all;
+        transition-timing-function: ease-out;
+        transform: translateZ(0);
+    }
     a {
         text-decoration: none;
         color: #409EFF;

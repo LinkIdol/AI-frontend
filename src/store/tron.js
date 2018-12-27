@@ -1,5 +1,5 @@
-import getWeb3 from '../util/getWeb3'
-
+import API from '@/api'
+import util from '@/util/util'
 const tron = {
     state: {
         tron: {
@@ -7,22 +7,18 @@ const tron = {
             tronWebInstance: null,
             coinbase: null,
             balance: null
-        },
-        isLoginIn: false
+        }
     },
     mutations: {
         registerTronWebInstance (state, payload) {
             console.log('registerTronWebinstance Mutation being executed', payload)
             let result = payload
-            let copy = state.tronWeb
+            let copy = state.tron
             copy.coinbase = result.coinbase
             copy.balance = parseInt(result.balance, 10)
             copy.isInjected = result.injectedTronWeb
             copy.tronWebInstance = result.tronWeb
             state.tron = copy
-        },
-        updateLogin(state, data) {
-            state.isLoginIn = data;
         },
         updateState(state, data) {
             state = {...state, data}
@@ -34,22 +30,30 @@ const tron = {
         },
     },
     actions: {
-        registerWeb3 ({commit}) {
+        async registerTronWeb ({commit}) {
             console.log('registerTronWeb Action being executed')
-            getWeb3.then(result => {
-                console.log('committing result to registerTronWebInstance mutation')
-                commit('registerTronWebInstance', result)
-            }).catch(e => {
-                console.log('error in action registerTronWeb', e)
-            })
+            let tronWeb = window.tronWeb;
+            let result = {
+                injectedTronWeb: tronWeb.ready,
+                coinbase: tronWeb.defaultAddress.base58,
+                balance: null,
+                tronWeb
+            };
+            await API.login({
+                address: result.coinbase
+            }).then(res => {
+                if (res.code === 0) {
+                    util.setCookie('access_token', res.data.access_token);
+                }
+            });
+            result.balance = await tronWeb.trx.getBalance(result.coinbase);
+            commit('registerTronWebInstance', result);
         },
         pollTronWeb ({commit}, payload) {
             console.log('pollTronWeb action being executed')
             commit('pollTronWebInstance', payload)
         },
     },
-    getters: {
-
-    }
+    getters: {}
 }
 export default tron

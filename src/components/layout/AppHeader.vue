@@ -19,14 +19,14 @@
                     <el-menu-item index="market" route="/market">
                         {{$t('market')}}
                     </el-menu-item>
-                    <!--<el-menu-item index="register" route="/register" v-if="!isLoginIn">
+                    <!--<el-menu-item index="register" route="/register" v-if="!isInjected">
                         注册
                     </el-menu-item>-->
-                    <el-menu-item index="user" route="/user" v-if="isLoginIn">
+                    <el-menu-item index="user" route="/user" v-if="isInjected">
                         <font-awesome-icon :icon="['fas', 'user-circle']" size="lg"/>
                     </el-menu-item>
                 </el-menu>
-                <div v-if="!isLoginIn" class="menuItem" @click="login">登录</div>
+                <div v-if="!isInjected" class="menuItem" @click="login">登录</div>
             </div>
         </div>
     </div>
@@ -53,7 +53,6 @@
                         title: '温馨提示',
                         message: '请先安装波场钱包插件'
                     });
-                    this.$store.commit('updateLogin', false)
                 } else {
                     if (!window.tronWeb.ready) {
                         this.$notify({
@@ -61,15 +60,13 @@
                             title: '温馨提示',
                             message: '波场钱包请先解锁'
                         });
-                        this.$store.commit('updateLogin', false)
                     } else {
                         this.$notify({
                             type: 'success',
                             title: '温馨提示',
                             message: '登录成功'
                         });
-                        this.$store.commit('updateLogin', true)
-                        let address = window.tronWeb.defaultAddress.hex;
+                        let address = window.tronWeb.defaultAddress.base58;
                         this.API.login({
                             address: address
                         }).then(res => {
@@ -92,7 +89,9 @@
         },
         computed: {
             ...mapState({
-                'isLoginIn': state => state.tron.isLoginIn
+                isInjected: state => state.tron.tron.isInjected,
+                coinbase: state => state.tron.tron.coinbase,
+                balance: state => state.tron.tron.balance
             })
         },
         watch: {

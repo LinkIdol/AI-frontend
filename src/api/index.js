@@ -1,9 +1,12 @@
 import axios from 'axios'
 import config from './config'
-axios.defaults.withCredentials = true
+import SaleClockAuction from '../util/json/SaleClockAuction.json'
+axios.defaults.withCredentials = true;
 const instance = axios.create({
     baseURL: config.BASE_URL
 });
+const contract = window.web3.eth.contract(SaleClockAuction.abi).at(SaleClockAuction.address);
+
 // api Interface document : https://github.com/cnchenhao/idol-server/blob/master/specification.md
 export default {
     /* {
@@ -24,8 +27,8 @@ export default {
     "address":"TVjmtiAVdbox9LYtZ7eu8Bq7mHJFZCZ3dg",
     "sign":"ab56b4d92b40713acc5af89985d4b786"
     }*/
-    login(data) {
-        return instance.request({
+    async login(data) {
+        return await instance.request({
             url:'/user/login',
             method: 'post',
             data
@@ -100,8 +103,8 @@ export default {
     * }
     * request header: Cookie
     * */
-    setName(data) {
-        return instance.request({
+    async setName(data) {
+        return await instance.request({
             url:'/idol/setName',
             method: 'post',
             data
@@ -116,13 +119,22 @@ export default {
     * }
     * request header: Cookie
     * */
-    setBio(data) {
-        return instance.request({
+    async setBio(data) {
+        return await instance.request({
             url:'/idol/setBio',
             method: 'post',
             data
         }).then(function (response) {
             return response.data;
         })
+    },
+    buyIdol(id, price) {
+        return new Promise((resolve, reject) => {
+            contract.bid(id, {
+                    value: price, // web3.toWei(Number(price), 'ether'),
+                    gasPrice: 1000000000 * 5
+                },
+                (err, result) => (err ? reject(err) : resolve(result)));
+        });
     }
 }

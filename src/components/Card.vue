@@ -1,7 +1,7 @@
 <template>
     <div class="idol">
         <div class="card-body" @click="toDetail">
-            <div class="heart-icon-container" @click.stop>
+            <div class="heart-icon-container" @click.stop v-if="canFav">
                 <font-awesome-icon :icon="['far', 'heart']" v-if="idol.IsLike === 0" @click.stop="like"/>
                 <font-awesome-icon :icon="['fas', 'heart']" v-if="idol.IsLike === 1" @click.stop="unlike"/>
             </div>
@@ -18,7 +18,7 @@
                 <span>#{{idol.TokenId}}</span>
             </div>
         </div>
-        <div class="buy" @click="buy">
+        <div class="buy" @click="buy" v-if="canBuy">
             <span>{{$t('buy')}}</span>
         </div>
     </div>
@@ -45,6 +45,14 @@
                         UserId:1
                     }
                 }
+            },
+            canBuy: {
+                type: Boolean,
+                default: true
+            },
+            canFav: {
+                type: Boolean,
+                default: true,
             }
         },
         data() {
@@ -83,7 +91,10 @@
                 })
             },
             async buy() {
-                this.$store.state.web3.contractInstance().bet('2', {
+                /*this.API.buyIdol('1', '0.001').then((res) => {
+                    console.log(res);
+                })*/
+                this.$store.state.web3.contractInstance().bid('2', {
                     gas: 300000,
                     value: this.$store.state.web3.web3.web3Instance().toWei('0.001', 'ether'),
                     from: this.$store.state.web3.web3.coinbase

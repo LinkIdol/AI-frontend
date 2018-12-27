@@ -96,6 +96,7 @@
 
 <script>
     import Card from '@/components/Card'
+    import { mapState } from 'vuex'
     export default {
         name: 'Market',
         components: {
@@ -202,6 +203,13 @@
         },
         beforeCreate () {
             this.$store.dispatch('registerWeb3')
+        },
+        computed: {
+            ...mapState({
+                isInjected: state => state.tron.tron.isInjected,
+                coinbase: state => state.tron.tron.coinbase,
+                balance: state => state.tron.tron.balance
+            })
         },
     }
 </script>

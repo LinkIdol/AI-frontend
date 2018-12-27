@@ -74,7 +74,7 @@ export default {
         tronWeb = tronPay.tronWeb || tronWeb
         if (tronWeb.isTronPay && tronWeb.ready) {
             this.$store.commit('updateLogin', true)
-            let address = window.tronWeb.defaultAddress.hex;
+            let address = window.tronWeb.defaultAddress.base58;
             API.login({
                 address: address,
                 sign: ''
