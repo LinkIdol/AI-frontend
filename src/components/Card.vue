@@ -12,7 +12,7 @@
                 <img :src="CONFIG.IMG_SERVER + idol.Pic" class="avatar-img">
             </div>
             <div class="body-middle">
-                <span>第{{idol.Genes}}世代 · R</span>
+                <span>{{$t('num_gen', {num:idol.Genes})}} · R</span>
             </div>
             <div class="body-bottom">
                 <span>#{{idol.TokenId}}</span>
@@ -48,7 +48,7 @@
             },
             canBuy: {
                 type: Boolean,
-                default: true
+                default: false
             },
             canFav: {
                 type: Boolean,
@@ -75,8 +75,8 @@
                     } else {
                         this.$notify({
                             type: 'error',
-                            title: '温馨提示',
-                            message: '点赞失败',
+                            title: this.$t('tips'),
+                            message: this.$t('like_failure'),
                             duration: 2000
                         });
                     }
@@ -94,13 +94,13 @@
                 /*this.API.buyIdol('1', '0.001').then((res) => {
                     console.log(res);
                 })*/
-                this.$store.state.web3.contractInstance().bid('2', {
+                /*this.$store.state.web3.contractInstance().bid('2', {
                     gas: 300000,
                     value: this.$store.state.web3.web3.web3Instance().toWei('0.001', 'ether'),
                     from: this.$store.state.web3.web3.coinbase
                 }, (err, result) => {
                     console.log(err, result);
-                })
+                })*/
             }
         }
     }

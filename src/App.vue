@@ -23,6 +23,15 @@
             AppFooter
         },
         mounted() {
+            console.log(this.$store);
+            console.log('app mounted', window.tronWeb);
+            if (!window.tronWeb.ready) {
+                this.$notify.info({
+                    title: this.$t('tips'),
+                    message: this.$t('unlock_first'),
+                    duration: 0
+                });
+            }
         },
         methods: {
         },
@@ -36,6 +45,9 @@
         padding: 0;
         margin: 0;
         background-color: $bgColor;
+        /*background-image: url("./assets/background.png");
+        background-repeat: no-repeat;
+        background-clip: content-box;*/
     }
     .page-header {
         position: relative;

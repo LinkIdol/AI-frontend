@@ -6,13 +6,18 @@ Vue.use(Router)
 export default new Router({
     routes: [
         {
+            path: '/home',
+            redirect: '/'
+        },
+        {
             path: '/',
-            redirect: '/market'
+            name: 'home',
+            component: () => import(/* webpackChunkName: "market" */ './views/Home.vue')
         },
         {
             path: '/market',
             name: 'market',
-            component: () => import(/* webpackChunkName: "market" */ './views/Home.vue')
+            component: () => import(/* webpackChunkName: "market" */ './views/Market.vue')
         },
         {
             path: '/about',

@@ -3,33 +3,43 @@
         <div class="fixed-width myFooter">
             <div>
                 <p>
-                    <router-link to="/market">市场</router-link>
+                    <router-link to="/market">{{$t('market')}}</router-link>
                 </p>
                 <p>
-                    <router-link to="/market">常见问题</router-link>
+                    <router-link to="/market">{{$t('common_problem')}}</router-link>
                 </p>
                 <p>
-                    <router-link to="/market">教程</router-link>
+                    <router-link to="/market">{{$t('tutorial')}}</router-link>
                 </p>
             </div>
             <div>
                 <p>
-                    <router-link to="/about">关于</router-link>
+                    <router-link to="/about">{{$t('about')}}</router-link>
                 </p>
                 <p>
-                    <router-link to="/market">白皮书</router-link>
+                    <router-link to="/market">{{$t('white_paper')}}</router-link>
                 </p>
                 <p>
-                    <router-link to="/market">隐私政策</router-link>
+                    <router-link to="/market">{{$t('privacy_policy')}}</router-link>
                 </p>
             </div>
             <div>
-                <p><a href="https://telegram.org/">telegram</a></p>
-                <p><a href="https://twitter.com/">twitter</a></p>
-                <p><a href="https://www.youtube.com/">youtube</a></p>
+                <p><a href="https://discord.gg/mEFKYA9">Discord</a></p>
+                <p><a href="https://twitter.com/link_idol_">Twitter</a></p>
+                <p><a href="https://weibo.com/linkidol/">{{$t('weibo')}}</a></p>
+                <p>
+                    <el-tooltip class="item" effect="dark" content="742109794" placement="right">
+                        <a>{{$t('qq_group')}}</a>
+                    </el-tooltip>
+                </p>
+                <p>
+                    <el-tooltip class="item" effect="dark" content="linkidol" placement="right">
+                        <a>{{$t('wechat_id')}}</a>
+                    </el-tooltip>
+                </p>
             </div>
             <div class="langContainer">
-                <el-select v-model="lang" placeholder="请选择" @change="langChange">
+                <el-select v-model="lang" :placeholder="$t('please_select')" @change="langChange">
                     <el-option
                             v-for="item in LangOptions"
                             :key="item.value"
@@ -40,7 +50,7 @@
             </div>
         </div>
         <div class="copyRight">
-            <span> Copyright © 2018 CryptoGirls Team </span> <span> , Powered by Snark AI </span>
+            <span> Copyright © 2018 CryptoGirls Team </span> <span> , Powered by <a href="https://snark.ai/">Snark AI</a> </span>
         </div>
     </div>
 </template>

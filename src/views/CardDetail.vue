@@ -2,23 +2,23 @@
     <div class="card" v-loading="loading" element-loading-background="rgba(25,20,40, 0.8)">
         <div class="fixed-width" style="display: flex;align-items: center;justify-content: space-between;">
             <!--<button class="idol-button">
-                <span>编辑</span>
+                <span>{{$t('edit')}}</span>
             </button>-->
             <div>
-                <a class="btn btn-plain" @click="showEdit=true">
+                <a class="btn btn-plain" @click="showEditDialog" v-if="isOwner">
                     <font-awesome-icon :icon="['far', 'edit']" />
-                    <span>编辑</span>
+                    <span>{{$t('edit')}}</span>
                 </a>
             </div>
             <div>
-                <a class="btn btn-plain">
-                    <span>赠送</span>
+                <a class="btn btn-plain" @click="buyIdol" v-if="canBuy">
+                    <span>{{$t('buy')}}</span>
                 </a>
-                <a class="btn btn-plain">
-                    <span>购买</span>
+                <a class="btn btn-plain" @click="showSale=true" v-if="isOwner">
+                    <span>{{$t('sell')}}</span>
                 </a>
-                <a class="btn btn-plain">
-                    <span>卖出</span>
+                <a class="btn btn-plain" @click="showGift=true" v-if="isOwner">
+                    <span>{{$t('gift')}}</span>
                 </a>
             </div>
         </div>
@@ -27,7 +27,7 @@
                 <div class="detail-main">
                     <div style="margin-right: 40px;">
                         <div class="share" @click="showShare=true">
-                            <span>share</span>
+                            <span>{{$t('share')}}</span>
                         </div>
                     </div>
                     <!--<div class="detail-info">-->
@@ -43,7 +43,7 @@
                                     <img :src="CONFIG.IMG_SERVER+idol.Pic" style="width: 100%;">
                                 </div>
                                 <div style="margin-top: 20px;">
-                                    <span>第{{idol.Genes}}世代#{{idol.TokenId}}</span>
+                                    <span>{{$t('num_gen',{num: idol.Genes})}}#{{idol.TokenId}}</span>
                                 </div>
                             </div>
                         </div>
@@ -51,24 +51,24 @@
                             <div class="idolProfile">
                                 <div>
                                     <div>
-                                        <span>自我介绍</span>
+                                        <span>{{$t('self_introduction')}}</span>
                                     </div>
                                     <div>
-                                        <p>{{idol.Bio || '暂无'}}</p>
+                                        <p>{{idol.Bio || $t('no_data')}}</p>
                                     </div>
                                 </div>
                                 <div>
                                     <div>
-                                        <span>标签</span>
+                                        <span>{{$t('label')}}</span>
                                     </div>
                                     <div style="display: flex;flex-wrap: wrap;align-items: flex-start;">
                                         <span class="labelContent" v-for="(item, i) in labels" :key="i">{{item}}</span>
-                                        <span v-if="labels.length <= 0">暂无标签~</span>
+                                        <span v-if="labels.length <= 0">{{$t('no_label')}}</span>
                                     </div>
                                 </div>
                                 <div>
                                     <div>
-                                        <span>属性</span>
+                                        <span>{{$t('attribute')}}</span>
                                     </div>
                                     <div style="display: flex;flex-wrap: wrap;align-items: flex-start;">
                                         <span class="labelContent" v-for="(item, i) in attributes" :key="i">{{item}}</span>
@@ -78,12 +78,12 @@
                                     </div>
                                 </div>
                                 <div style="display: flex;">
-                                    <div style="margin-right: 10px;">
-                                        <div>编码</div>
+                                    <!--<div style="margin-right: 10px;">
+                                        <div>{{$t('coding')}}</div>
                                         <div>...</div>
-                                    </div>
+                                    </div>-->
                                     <div>
-                                        <div>冷却状态</div>
+                                        <div>{{$t('cooling_state')}}</div>
                                         <div>{{coolDown[idol.Cooldown]}}</div>
                                     </div>
                                 </div>
@@ -101,39 +101,91 @@
                 </div>
                 <div class="line">
                     <img src="../assets/detail-bg2.png" alt="">
-                    <p style="white-space: nowrap;color: #fff;margin-left: 10px;font-size: 14px;line-height: 24px;">所有者：{{idol.UserName}}</p>
+                    <p class="owner">{{$t('owner')}}：{{idol.UserName || idol.Address}}</p>
                 </div>
             </div>
         </div>
-        <el-dialog title="分享到社交网络" :visible.sync="showShare" width="400px" class="shareDialog">
-            <input type="text" class="copyInput" :value="currentHref" readonly="readonly">
-            <font-awesome-icon size="lg" class="copyIcon" :icon="['far', 'copy']" @click="copyText"/>
+        <el-dialog :title="$t('share')+'idol'" :visible.sync="showShare" width="400px" class="shareDialog">
+            <div style="padding-bottom: 10px;border-bottom: 1px solid #ccc;">
+                <input type="text" class="copyInput" :value="currentHref" readonly="readonly">
+                <font-awesome-icon size="lg" class="copyIcon" :icon="['far', 'copy']" @click="copyText"/>
+            </div>
+            <div style="margin-top: 20px;">
+                <el-button type="danger" size="mini" @click="share('weibo')"><font-awesome-icon size="lg" :icon="['fab', 'weibo']" /></el-button>
+                <el-button type="success" size="mini" @click="share('wechat')"><font-awesome-icon size="lg" :icon="['fab', 'weixin']" /></el-button>
+                <el-button type="warning" size="mini" @click="share('twitter')"><font-awesome-icon size="lg" :icon="['fab', 'twitter']" /></el-button>
+                <el-button type="primary" size="mini" @click="share('facebook')"><font-awesome-icon size="lg" :icon="['fab', 'facebook-f']" /></el-button>
+            </div>
         </el-dialog>
-        <el-dialog title="编辑idol" :visible.sync="showEdit" width="350px">
-            <el-form label-width="80px">
-                <el-form-item label="名称">
-                    <el-input v-model="idolName"></el-input>
+        <el-dialog :title="$t('edit')+'idol'" :visible.sync="showEdit" width="350px">
+            <el-form :model="editForm" :rules="editRules" ref="editForm" label-width="80px">
+                <el-form-item :label="$t('name')" prop="name">
+                    <el-input v-model="editForm.name"></el-input>
                 </el-form-item>
-                <el-form-item label="介绍">
-                    <el-input v-model="idolBio" type="textarea" :rows="2"></el-input>
+                <el-form-item :label="$t('introduction')" prop="bio">
+                    <el-input v-model="editForm.bio" type="textarea" :rows="2"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="showEdit = false">取 消</el-button>
-                <el-button type="primary" @click="editIdol">确 定</el-button>
+                <el-button @click="showEdit = false">{{$t('cancel')}}</el-button>
+                <el-button type="primary" @click="editIdol">$t('determine')</el-button>
+            </span>
+        </el-dialog>
+        <el-dialog :title="$t('sale')+'idol'" :visible.sync="showSale" width="400px">
+            <el-form :model="saleParams" :rules="saleRules" ref="saleParams" label-width="80px">
+                <el-form-item :label="$t('start_price')" prop="startPrice">
+                    <el-input-number style="width: 100%;" v-model="saleParams.startPrice" controls-position="right" :min="1">
+                    </el-input-number>
+                    <!--<el-input v-model="saleParams.startPrice">
+                        <template slot="append">trx</template>
+                    </el-input>-->
+                </el-form-item>
+                <el-form-item :label="$t('end_price')" prop="endPrice">
+                    <el-input-number style="width: 100%;" v-model="saleParams.endPrice" controls-position="right" :min="1">
+                    </el-input-number>
+                    <!--<el-input v-model="saleParams.endPrice">
+                        <template slot="append">trx</template>
+                    </el-input>-->
+                </el-form-item>
+                <el-form-item :label="$t('duration')" prop="duration">
+                    <el-input v-model="saleParams.duration">
+                        <template slot="append">{{$t('day')}}</template>
+                    </el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="showSale = false">{{$t('cancel')}}</el-button>
+                <el-button type="primary" @click="saleIdol">$t('determine')</el-button>
               </span>
+        </el-dialog>
+        <el-dialog :title="$t('gift')+'idol'" :visible.sync="showGift" width="500px">
+            <el-form :model="giftForm" :rules="giftRules" ref="giftForm" label-width="80px">
+                <el-form-item label="Address" prop="address">
+                    <el-input v-model="giftForm.address"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="showGift = false">{{$t('cancel')}}</el-button>
+                <el-button type="primary" @click="giftIdol">$t('determine')</el-button>
+            </span>
         </el-dialog>
     </div>
 </template>
 <script>
     export default {
-        name: 'Card',
+        name: 'Detail',
         data() {
+            let checkAddress = (rule, value, callback) => {
+                if (!window.tronWeb.isAddress(value)) {
+                    callback(new Error(this.$t('invalid_address')));
+                } else {
+                    callback();
+                }
+            };
             return {
                 idol: {},
                 id: '',
                 loading: false,
-                showShare: false,
                 coolDown: {
                     "4":"Ultra Rapid",
                     "3":"Specially Super Rapid",
@@ -142,9 +194,42 @@
                     "0":"Normal",
                 },
                 currentHref: window.location.href,
+                showShare: false,
                 showEdit: false,
-                idolName: '',
-                idolBio: ''
+                showSale: false,
+                showGift: false,
+                editForm: {
+                    name: '',
+                    bio: ''
+                },
+                editRules: {
+                    name: [
+                        { required: true, message: this.$t('Please enter a name'), trigger: 'blur' },
+                        { min: 3, max: 10, message: this.$t('check_length', [3, 10]), trigger: 'blur' }
+                    ],
+                    bio: { min: 0, max: 40, message: this.$t('check_length', [0, 40]), trigger: 'blur' }
+                },
+                saleParams: {
+                    startPrice: null,
+                    endPrice: null,
+                    duration: null
+                },
+                saleRules: {
+                    startPrice: { required: true, message: this.$t('Please enter the starting price'), trigger: 'blur' },
+                    endPrice: { required: true, message: this.$t('Please enter the ending price'), trigger: 'blur' },
+                    duration: [
+                        { required: true, message: this.$t('Please enter the duration'), trigger: 'blur' },
+                        /*{ type: 'number', message: '拍卖周期必须为数字值'}*/
+                    ]
+                },
+                giftRules: {
+                    address: [{ validator: checkAddress, trigger: 'blur' }]
+                },
+                giftForm: {
+                    address: ''
+                },
+                owner: 'TLxQvu9k12tvXt8XzDXHqRRv2wSXp3kpw7',
+                currentAddress: ''
             }
         },
         created() {
@@ -152,20 +237,136 @@
             this.getDetail();
         },
         methods: {
+            async buyIdol() {
+                let price = window.tronWeb.toSun(1)
+                const loading = this.$loading({
+                    lock: true,
+                    text: this.$t('confirmation_transaction'),
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+                this.API.buyIdol(this.id, price).then((res) => {
+                    console.log(res);
+                    loading.close();
+                    this.$message({
+                        message: this.$t('transaction_success'),
+                        type: 'success'
+                    });
+                    this.getDetail();
+                }).catch(err => {
+                    console.log(err);
+                    loading.close();
+                    this.$message({
+                        message: `${this.$t('transaction_failed')}，${err}`,
+                        type: 'error'
+                    });
+                })
+            },
+            async saleIdol() {
+                this.$refs['saleParams'].validate((valid) => {
+                    if (valid) {
+                        this.showSale = false;
+                        const loading = this.$loading({
+                            lock: true,
+                            text: this.$t('operation_progress'),
+                            spinner: 'el-icon-loading',
+                            background: 'rgba(0, 0, 0, 0.7)'
+                        });
+                        this.API.saleIdol(this.id, this.saleParams.startPrice, this.saleParams.endPrice, this.saleParams.duration).then((res) => {
+                            console.log(res);
+                            loading.close();
+                            this.$message({
+                                message: this.$t('operation_success'),
+                                type: 'success'
+                            });
+                            this.getDetail();
+                        }).catch(err => {
+                            console.log(err);
+                            loading.close();
+                            this.$message({
+                                message: `${this.$t('operation_failed')}，${err}`,
+                                type: 'error'
+                            });
+                        })
+                    } else {
+                        return;
+                    }
+                });
+            },
+            async giftIdol() {
+                this.$refs['giftForm'].validate((valid) => {
+                    if (valid) {
+                        this.showGift = false;
+                        const loading = this.$loading({
+                            lock: true,
+                            text: this.$t('operation_progress'),
+                            spinner: 'el-icon-loading',
+                            background: 'rgba(0, 0, 0, 0.7)'
+                        });
+                        this.API.giftIdol(this.giftForm.address, this.id).then((res) => {
+                            console.log(res);
+                            loading.close();
+                            this.$message({
+                                message: this.$t('operation_success'),
+                                type: 'success'
+                            });
+                            this.getDetail();
+                        }).catch(err => {
+                            console.log(err);
+                            loading.close();
+                            this.$message({
+                                message: `${this.$t('operation_failed')}，${err}`,
+                                type: 'error'
+                            });
+                        })
+                    } else {
+                        return false;
+                    }
+                })
+            },
             async editIdol() {
-                this.showEdit = false;
-                this.loading = true;
-                await this.API.setName({'tokenId': this.id, 'name': this.idolName})
-                await this.API.setBio({'tokenId': this.id, 'bio': this.idolBio})
-                this.loading = false;
-                this.getDetail();
+                this.$refs['editForm'].validate(async (valid) => {
+                    if (valid) {
+                        this.showEdit = false;
+                        this.loading = true;
+                        await this.API.setName({'tokenId': this.id, 'name': this.editForm.name}).then((res) => {
+                            if (res.code === 0) {
+                                this.$message({
+                                    message: this.$t('edit_success'),
+                                    type: 'success'
+                                });
+                            } else {
+                                this.$message.error(this.$t('edit_failed'));
+                            }
+                        })
+                        await this.API.setBio({'tokenId': this.id, 'bio': this.editForm.bio}).then((res) => {
+                            if (res.code === 0) {
+                                this.$message({
+                                    message: this.$t('edit_success'),
+                                    type: 'success'
+                                });
+                            } else {
+                                this.$message.error(this.$t('edit_failed'));
+                            }
+                        })
+                        this.loading = false;
+                        this.getDetail();
+                    } else {
+                        return false;
+                    }
+                });
+            },
+            showEditDialog() {
+                this.showEdit = true;
+                this.editForm.name = this.idol.NickName;
+                this.editForm.bio = this.idol.Bio;
             },
             copyText() {
                 let e = document.querySelector('.copyInput');
                 e.select();
                 document.execCommand('Copy');
                 this.$message({
-                    message: '复制成功',
+                    message: this.$t('copy_success'),
                     type: 'success'
                 });
             },
@@ -193,6 +394,37 @@
                         this.getDetail();
                     }
                 })
+            },
+            share(social) {
+                var win = window.open(this.shareUrl(social), '_tab');
+                win.focus();
+            },
+            // https://codepen.io/discountry/pen/WxkLmJ?editors=1010
+            shareUrl(social) {
+                const encodeURL = encodeURIComponent(this.currentHref);
+                const url = this.currentHref;
+                let shareURL = '';
+                switch (social) {
+                    case 'weibo': {
+                        shareURL = `http://service.weibo.com/share/share.php?url=${url}&title=${encodeURL}`;
+                        break;
+                    }
+                    case 'wechat': {
+                        shareURL = `https://cli.im/api/qrcode/code?mhid=sRHEDAjmzMkhMHcvL9BQPKg&text=${url}?taici='${encodeURL}'`
+                        break;
+                    }
+                    case 'twitter': {
+                        shareURL = `https://twitter.com/intent/tweet?text=${encodeURL}`
+                        break;
+                    }
+                    case 'facebook': {
+                        shareURL = `https://www.facebook.com/dialog/feed?app_id=145634995501895&display=page&description=${encodeURL}&link=${url}&redirect_uri=https://www.facebook.com/`
+                        break;
+                    }
+                    default:
+                        break;
+                }
+                return shareURL;
             }
         },
         computed: {
@@ -203,11 +435,32 @@
             attributes() {
                 let attributes = this.idol.Attributes ? this.idol.Attributes : '';
                 return attributes.split(',')
+            },
+            canBuy() {
+                if (this.idol.IsForSale === 1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            isOwner() {
+                return this.currentAddress === this.idol.Address
             }
+        },
+        mounted() {
+            console.log(window.tronWeb);
+            this.currentAddress = window.tronWeb.defaultAddress.base58
         }
     }
 </script>
 <style lang="scss" scoped>
+    .owner {
+        min-width: 300px;
+        color: #fff;
+        margin-left: 10px;
+        font-size: 14px;
+        line-height: 24px;
+    }
     .profileBox {
         display: inline-block;
         width: 476px;
@@ -218,7 +471,7 @@
     }
     .copyIcon {
         cursor: pointer;
-        float: right;
+        margin-left: 10px;
         &:hover {
             color: #656DF0;
         }
@@ -388,5 +641,35 @@
             outline-offset: 15px;
             text-shadow: 1px 1px 2px #427388;
         }
+    }
+    .share-btn {
+        min-width: 40px;
+        color: #fff;
+        background-color: #337ab7;
+        border-color: #2e6da4;
+        display: inline-block;
+        padding: 6px 6px;
+        margin-bottom: 0;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.42857143;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        -ms-touch-action: manipulation;
+        touch-action: manipulation;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        background-image: none;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+    .share-btn:hover {
+        color: #fff;
+        background-color: #286090;
+        border-color: #204d74;
     }
 </style>

@@ -1,4 +1,3 @@
-import getContract from '../util/getContract'
 import getWeb3 from '../util/getWeb3'
 import pollWeb3 from '../util/pollWeb3'
 
@@ -11,8 +10,7 @@ const web3 = {
             coinbase: null,
             balance: null,
             error: null
-        },
-        contractInstance: null
+        }
     },
     mutations: {
         registerWeb3Instance (state, payload) {
@@ -50,11 +48,6 @@ const web3 = {
         pollWeb3 ({commit}, payload) {
             console.log('pollWeb3 action being executed')
             commit('pollWeb3Instance', payload)
-        },
-        getContractInstance ({commit}) {
-            getContract.then(result => {
-                commit('registerContractInstance', result)
-            }).catch(e => console.log(e))
         }
     },
     getters: {

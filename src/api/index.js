@@ -1,11 +1,17 @@
 import axios from 'axios'
 import config from './config'
 import SaleClockAuction from '../util/json/SaleClockAuction.json'
+import KittyCore from '../util/json/KittyCore.json'
 axios.defaults.withCredentials = true;
 const instance = axios.create({
     baseURL: config.BASE_URL
 });
-const contract = window.web3.eth.contract(SaleClockAuction.abi).at(SaleClockAuction.address);
+/*const SaleClockAuctionContract = window.web3 ? window.web3.eth.contract(SaleClockAuction.abi).at(SaleClockAuction.address) : {};
+const KittyCoreContract = window.web3 ? window.web3.eth.contract(KittyCore.abi).at(KittyCore.address) : {};*/
+
+
+/*const tronWeb_SaleClockAuctionContract = window.tronWeb ? window.tronWeb.contract(SaleClockAuction.abi, config.TronWeb_SaleClockAuction) : {};
+const tronWeb_KittyCoreContract = window.tronWeb ? window.tronWeb.contract(KittyCore.abi, config.TronWeb_KittyCore) : {};*/
 
 // api Interface document : https://github.com/cnchenhao/idol-server/blob/master/specification.md
 export default {
@@ -129,12 +135,46 @@ export default {
         })
     },
     buyIdol(id, price) {
-        return new Promise((resolve, reject) => {
-            contract.bid(id, {
+        return window.tronWeb.contract(SaleClockAuction.abi, config.TronWeb_SaleClockAuction).bid(id).send({
+            callValue: price,
+            shouldPollResponse: false
+        });
+        /*return new Promise((resolve, reject) => {
+            SaleClockAuctionContract.bid(id, {
                     value: price, // web3.toWei(Number(price), 'ether'),
-                    gasPrice: 1000000000 * 5
+                    gas: 300000
                 },
                 (err, result) => (err ? reject(err) : resolve(result)));
+        });*/
+    },
+    saleIdol(id, startPrice, endPrice, duration) {
+        return window.tronWeb.contract(KittyCore.abi, config.TronWeb_KittyCore).createSaleAuction(id, startPrice, endPrice, duration).send({
+            callValue: 0,
+            shouldPollResponse: false
+        });
+        /*return new Promise((resolve, reject) => {
+            KittyCoreContract.createSaleAuction(id, startPrice, endPrice, duration, {
+                    gas: 300000
+                },
+                (err, result) => (err ? reject(err) : resolve(result)));
+        });*/
+    },
+    giftIdol(toAddress, id) {
+        return window.tronWeb.contract(KittyCore.abi, config.TronWeb_KittyCore).transfer(toAddress, id).send({
+            callValue: 0,
+            shouldPollResponse: false
+        });
+        /*return new Promise((resolve, reject) => {
+            KittyCoreContract.transfer(toAddress, id, {
+                    gas: 300000
+                },
+                (err, result) => (err ? reject(err) : resolve(result)));
+        });*/
+    },
+    breedIdol(matronId, sireId) {
+        return window.tronWeb.contract(KittyCore.abi, config.TronWeb_KittyCore).breedWithAuto(matronId, sireId).send({
+            callValue: 0,
+            shouldPollResponse: false
         });
     }
 }

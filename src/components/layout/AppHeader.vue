@@ -20,13 +20,13 @@
                         {{$t('market')}}
                     </el-menu-item>
                     <!--<el-menu-item index="register" route="/register" v-if="!isInjected">
-                        注册
+                        {{$t('register')}}
                     </el-menu-item>-->
                     <el-menu-item index="user" route="/user" v-if="isInjected">
                         <font-awesome-icon :icon="['fas', 'user-circle']" size="lg"/>
                     </el-menu-item>
                 </el-menu>
-                <div v-if="!isInjected" class="menuItem" @click="login">登录</div>
+                <div v-if="!isInjected" class="menuItem" @click="login">{{$t('login')}}</div>
             </div>
         </div>
     </div>
@@ -50,21 +50,21 @@
                 if (!window.tronWeb) {
                     this.$notify({
                         type: 'info',
-                        title: '温馨提示',
-                        message: '请先安装波场钱包插件'
+                        title: this.$t('tips'),
+                        message: this.$t('wallet_plugin_first')
                     });
                 } else {
                     if (!window.tronWeb.ready) {
                         this.$notify({
                             type: 'info',
-                            title: '温馨提示',
-                            message: '波场钱包请先解锁'
+                            title: this.$t('tips'),
+                            message: this.$t('unlock_first')
                         });
                     } else {
                         this.$notify({
                             type: 'success',
-                            title: '温馨提示',
-                            message: '登录成功'
+                            title: this.$t('tips'),
+                            message: this.$t('login_success')
                         });
                         let address = window.tronWeb.defaultAddress.base58;
                         this.API.login({

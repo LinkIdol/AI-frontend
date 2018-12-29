@@ -25,7 +25,7 @@ let getWeb3 = new Promise(function (resolve, reject) {
         reject(new Error('Unable to connect to Metamask'))
     }
 })
-    .then(result => {
+    /*.then(result => {
         return new Promise(function (resolve, reject) {
             // Retrieve network ID
             result.web3().version.getNetwork((err, networkId) => {
@@ -65,6 +65,6 @@ let getWeb3 = new Promise(function (resolve, reject) {
                 }
             })
         })
-    })
+    })*/
 
 export default getWeb3

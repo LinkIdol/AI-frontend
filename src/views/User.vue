@@ -6,11 +6,11 @@
             </div>
             <div>
                 <div style="font-size: 14px;margin-left: 20px;">
-                    <span style="color: #aaa;">tron address: </span>
+                    <span style="color: #aaa;">tron {{$t('address')}}: </span>
                     <span style="cursor: pointer">{{coinbase}}</span>
                 </div>
                 <div style="font-size: 14px;margin-left: 20px;">
-                    <span style="color: #aaa;">balance: </span>
+                    <span style="color: #aaa;">{{$t('balance')}}: </span>
                     <span>{{balance}} trx</span>
                 </div>
             </div>
@@ -34,7 +34,7 @@
                     </el-menu>
                     <div class="c-input">
                         <el-input
-                                placeholder="编号、名称、#标签 …"
+                                :placeholder="$t('number') + ' 、' + $t('name') + ' 、#' + $t('label') + '…'"
                                 prefix-icon="el-icon-search" clearable>
                         </el-input>
                     </div>
@@ -42,7 +42,7 @@
                 <div class="menu-container" onselectstart="return false;" >
                     <div class="menu-btn" :class="{'menu-btn-active': filterActive}" @click="filterActive=!filterActive">
                         <font-awesome-icon :icon="['fas', 'filter']" style="margin-right: 8px;"/>
-                        <span>筛选</span>
+                        <span>{{$t('filter')}}</span>
                     </div>
                     <div class="menu-btn" @click="sortBoxActive = !sortBoxActive">
                         <font-awesome-icon :icon="['fas', 'bars']" style="margin-right: 8px;"/>
@@ -55,7 +55,7 @@
             </div>
             <div v-if="filterActive" class="filterContainer fixed-width">
                 <div class="filterRow">
-                    <span style="margin-right: 10px">头发颜色：</span>
+                    <span style="margin-right: 10px">{{$t('hair_color')}}：</span>
                     <span class="a-tag"
                           v-for="(item, i) in hairColors"
                           :class="{'a-tag-active': item.active}"
@@ -64,7 +64,7 @@
                     </span>
                 </div>
                 <div class="filterRow">
-                    <span style="margin-right: 10px">眼睛颜色：</span>
+                    <span style="margin-right: 10px">{{$t('eye_color')}}：</span>
                     <span class="a-tag"
                           v-for="(item, i) in eyeColors"
                           :class="{'a-tag-active': item.active}"
@@ -73,7 +73,7 @@
                     </span>
                 </div>
                 <div class="filterRow">
-                    <span style="margin-right: 10px">发型：</span>
+                    <span style="margin-right: 10px">{{$t('hair_style')}}：</span>
                     <span class="a-tag"
                           v-for="(item, i) in hairStyles"
                           :class="{'a-tag-active': item.active}"
@@ -82,7 +82,7 @@
                     </span>
                 </div>
                 <div class="filterRow">
-                    <span style="margin-right: 10px">特征：</span>
+                    <span style="margin-right: 10px">{{$t('feature')}}：</span>
                     <span class="a-tag"
                           v-for="(item, i) in attributes"
                           :class="{'a-tag-active': item.active}"
@@ -95,7 +95,14 @@
         <!--<div style="margin-top: 20px;">
             <el-button plain style="float: right;">繁殖</el-button>
         </div>-->
-        <div class="fixed-width cardContainer" v-loading="loading" element-loading-background="#191428">
+        <div class="fixed-width" style="display: flex;justify-content: flex-end;">
+            <div  @click="showBreed = true">
+                <a-button>
+                    <span>{{$t('breed')}}</span>
+                </a-button>
+            </div>
+        </div>
+        <div class="fixed-width cardContainer" v-loading="loading" element-loading-background="#191428" style="margin-top: -20px;">
             <Card v-for="(item, i) in idolList"
                   :key="i" class="idolCard"
                   :idol="item"
@@ -104,7 +111,7 @@
                   :class="{'idolCard-noMargin': (i+1)%4 === 0}">
             </Card>
             <div class="no-data" v-if="idolList.length <= 0">
-                <span>(|||ﾟдﾟ) 找不到数据~~去 </span><router-link to="/market">市场</router-link><span> 看一下吧~~</span>
+                <span>(|||ﾟдﾟ) {{$t('not_find_data')}}~~{{$t('go')}} </span><router-link to="/market">{{$t('market')}}</router-link><span> {{$t('have_look')}}~~</span>
             </div>
         </div>
         <div class="pagination" v-if="pageCount > 0">
@@ -114,6 +121,42 @@
                            :total="pageCount" @current-change="handlePageChange">
             </el-pagination>
         </div>
+        <el-dialog :title="$t('breed') + 'Idol'" :visible.sync="showBreed" width="500px">
+            <el-form :model="breedForm" :rules="breedRules" ref="breedForm" label-width="80px">
+                <el-form-item :label="$t('father')" prop="matronId">
+                    <el-select v-model="breedForm.matronId" :placeholder="$t('Please choose father')">
+                        <el-option
+                                v-for="item in idolList"
+                                :key="item.TokenId"
+                                :label="item.NickName"
+                                :value="item.TokenId">
+                            <div style="display: flex;align-items: center;justify-content: space-between">
+                                <img :src="CONFIG.IMG_SERVER + item.Pic" alt="" style="width:30px;">
+                                <span>{{ item.NickName }}</span>
+                            </div>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item :label="$t('mother')" prop="sireId">
+                    <el-select v-model="breedForm.sireId" :placeholder="$t('Please choose mother')">
+                        <el-option
+                                v-for="item in idolList"
+                                :key="item.TokenId"
+                                :label="item.NickName"
+                                :value="item.TokenId">
+                            <div style="display: flex;align-items: center;justify-content: space-between">
+                                <img :src="CONFIG.IMG_SERVER + item.Pic" alt="" style="width:30px;">
+                                <span>{{ item.NickName }}</span>
+                            </div>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="showBreed = false">{{$t('cancel')}}</el-button>
+                <el-button type="primary" @click="breed">{{$t('determine')}}</el-button>
+            </span>
+        </el-dialog>
     </el-main>
 </template>
 
@@ -126,6 +169,13 @@
             Card
         },
         data() {
+            let checkBreed = (rule, value, callback) => {
+                if (this.breedForm.matronId === value) {
+                    callback(new Error(this.$t('been_selected')));
+                } else {
+                    callback();
+                }
+            };
             return {
                 idolList: [],
                 pageIndex: 1,
@@ -158,15 +208,57 @@
                     {id: 'glasses', name: '眼镜', active: false},
                 ],
                 sorts: [
-                    {id: '-id', name : 'ID降序'},
-                    {id: '+id', name : 'ID升序'}
+                    {id: '-id', name : this.$t('ID_desc')},
+                    {id: '+id', name : this.$t('ID_asc')}
                 ],
-                sort: {id: '-id', name : 'ID降序'},
+                sort: {id: '+id', name : this.$t('ID_asc')},
                 filterActive: false,
-                sortBoxActive: false
+                sortBoxActive: false,
+                showBreed: false,
+                breedForm: {
+                    matronId: '',
+                    sireId: ''
+                },
+                breedRules: {
+                    matronId: [{ required: true, message: this.$t('Please choose father'), trigger: 'change' }],
+                    sireId: [{ required: true, message: this.$t('Please choose mother'), trigger: 'change' },
+                        { validator: checkBreed, trigger: 'change' }]
+                },
+                canBreed: true
             }
         },
         methods: {
+            breed() {
+                this.$refs['breedForm'].validate((valid) => {
+                        if (valid) {
+                            this.showBreed = false;
+                            const loading = this.$loading({
+                                lock: true,
+                                text: this.$t('operation_progress'),
+                                spinner: 'el-icon-loading',
+                                background: 'rgba(0, 0, 0, 0.7)'
+                            });
+                            this.API.breedIdol(this.breedForm.matronId, this.breedForm.sireId).then((res) => {
+                                console.log(res);
+                                loading.close();
+                                this.$message({
+                                    message: this.$t('operation_success'),
+                                    type: 'success'
+                                });
+                                this.getDetail();
+                            }).catch(err => {
+                                console.log(err);
+                                loading.close();
+                                this.$message({
+                                    message: `${this.$t('operation_failed')}，${err}`,
+                                    type: 'error'
+                                });
+                            })
+                        } else {
+                            return;
+                        }
+                })
+            },
             activeAttr(attr, i) {
                 this[attr][i].active = !this[attr][i].active;
                 this.getList();
