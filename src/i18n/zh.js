@@ -9,7 +9,7 @@ export default {
     AI: '人工智能',
     AI_subtitle: '深度学习技术实现了高质量图片的自动生成。在图片质量，生成稳定性与多样性等方面，远超基于规则的图片生成技术。',
     blockChain: '区块链',
-    blockChain_subtitle: '每个CryptoGirls的基因都会被作为ERC-721保存于去中心化的以太坊区块链上。区块链特性使得CryotoGirls自身不可改变，所有权不可否证，每个个体独一无二。',
+    blockChain_subtitle: '每个CryptoGirls的基因都会被作为NRC-721保存于去中心化的波场区块链上。区块链特性使得CryotoGirls自身不可改变，所有权不可否证，每个个体独一无二。',
     animate: '动画',
     animate_subtitle: '我们致力于将最尖端的技术运用于艺术创作，不断探索架构联结艺术专业人士和业余爱好者的桥梁。',
     step: '步骤',
