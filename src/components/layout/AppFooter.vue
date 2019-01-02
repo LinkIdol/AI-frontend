@@ -50,7 +50,7 @@
             </div>
         </div>
         <div class="copyRight">
-            <span> Copyright © 2018 CryptoGirls Team </span> <span> , Powered by <a href="https://snark.ai/">Snark AI</a> </span>
+            <span> Copyright © 2018 Tron Producer Team </span> <span> , Powered by <a href="https://snark.ai/">Snark AI</a> </span>
         </div>
     </div>
 </template>

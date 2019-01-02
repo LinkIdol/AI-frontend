@@ -77,6 +77,12 @@
                                         <span class="labelContent">{{idol.EyeColor}} eye</span>
                                     </div>
                                 </div>
+                                <div>
+                                    <div>
+                                        <span>价格</span>
+                                    </div>
+                                    <canvas id="price-chart" width="250" height="100"></canvas>
+                                </div>
                                 <div style="display: flex;">
                                     <!--<div style="margin-right: 10px;">
                                         <div>{{$t('coding')}}</div>
@@ -425,6 +431,18 @@
                         break;
                 }
                 return shareURL;
+            },
+            draw() {
+                let canvas = document.getElementById('price-chart');
+                if(!canvas.getContext) return;
+                let ctx = canvas.getContext("2d");
+                ctx.fillStyle = "#333077";
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(0, 100);
+                ctx.lineTo(250, 100);
+                ctx.lineTo(250, 50);
+                ctx.fill();
             }
         },
         computed: {
@@ -448,12 +466,18 @@
             }
         },
         mounted() {
-            console.log(window.tronWeb);
-            this.currentAddress = window.tronWeb.defaultAddress.base58
+            this.currentAddress = window.tronWeb.defaultAddress.base58;
+            this.draw();
+            this.API.getIdolPrice(this.id).then(res => {
+                console.log(res);
+            });
         }
     }
 </script>
 <style lang="scss" scoped>
+    #price-chart {
+        cursor: pointer;
+    }
     .owner {
         min-width: 300px;
         color: #fff;

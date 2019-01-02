@@ -2,6 +2,7 @@ import axios from 'axios'
 import config from './config'
 import SaleClockAuction from '../util/json/SaleClockAuction.json'
 import KittyCore from '../util/json/KittyCore.json'
+import SiringClockAuction from '../util/json/SiringClockAuction.json'
 axios.defaults.withCredentials = true;
 const instance = axios.create({
     baseURL: config.BASE_URL
@@ -176,5 +177,8 @@ export default {
             callValue: 0,
             shouldPollResponse: false
         });
+    },
+    getIdolPrice(id) {
+        return window.tronWeb.contract(SiringClockAuction.abi, config.TronWeb_SiringClockAuction).getCurrentPrice(id).call();
     }
 }

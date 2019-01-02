@@ -42,6 +42,7 @@ let loadingInstance = Loading.service({
 const waitForGlobal = async () => {
     if (window.tronWeb) {
         const nodes = await window.tronWeb.isConnected();
+        console.log(nodes);
         const connected = !Object.entries(nodes).map(([key, value]) => {
             if (!value) {
                 console.error(`Error: ${key} is not connected`)
