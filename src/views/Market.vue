@@ -76,6 +76,15 @@
                           @click="activeAttr('attributes', i)">{{item.name}}
                     </span>
                 </div>
+                <!--<div class="filterRow">
+                    <span style="margin-right: 10px">{{$t('cooldown')}}：</span>
+                    <span class="a-tag"
+                          v-for="(item, i) in cooldowns"
+                          :class="{'a-tag-active': item.active}"
+                          :key="i"
+                          @click="activeAttr('cooldowns', i)">{{item.name}}
+                    </span>
+                </div>-->
             </div>
         </div>
         <div class="fixed-width cardContainer" v-loading="loading" element-loading-background="#191428">
@@ -102,6 +111,7 @@
         components: {
             Card
         },
+        created() {},
         data() {
             return {
                 idolList: [],
@@ -110,29 +120,16 @@
                 pageCount: 0,
                 loading: false,
                 category: 'all',
-                hairColors: [
-                    {id: 'blonde', name: '金色', active: false},
-                    {id: 'brown', name: '棕色', active: false},
-                    {id: 'black', name: '黑色', active: false},
-                    {id: 'blue', name: '蓝色', active: false},
-                ],
-                eyeColors: [
-                    {id: 'brown', name: '棕色', active: false},
-                    {id: 'black', name: '黑色', active: false},
-                ],
-                hairStyles: [
-                    {id: 'long hair', name: '长', active: false},
-                    {id: 'short hair', name: '短', active: false},
-                ],
-                attributes: [
-                    {id: 'cooldownready', name: '短', active: false},
-                    {id: 'dark skin', name: '黑色肌肤', active: false},
-                    {id: 'blush', name: '脸红', active: false},
-                    {id: 'smile', name: '微笑', active: false},
-                    {id: 'open mouth', name: '张嘴', active: false},
-                    {id: 'hat', name: '帽子', active: false},
-                    {id: 'ribbon', name: '丝带', active: false},
-                    {id: 'glasses', name: '眼镜', active: false},
+                //hairColors: [],
+                //eyeColors: [],
+                //hairStyles: [],
+                //attributes: [],
+                cooldowns: [
+                    {id: 'ur', name: 'Ultra Rapid', active: false},
+                    {id: 'ssr', name: 'Specially Super Rapid', active: false},
+                    {id: 'sr', name: 'Super Rapid', active: false},
+                    {id: 'r', name: 'Rapid', active: false},
+                    {id: 'n', name: 'Normal', active: false},
                 ],
                 sorts: [
                     {id: '-id', name : this.$t('ID_desc')},
@@ -162,6 +159,12 @@
                 this.hairStyles.forEach(item => {if (item.active) hairStyles.push(item.id)})
                 let attributes = [];
                 this.attributes.forEach(item => {if (item.active) attributes.push(item.id)})
+                let cooldowns = [];
+                this.cooldowns.forEach(item => {if (item.active) cooldowns.push(item.id)})
+                let filter = '';
+                if (cooldowns.length > 0) {
+                    filter = `cooldown:${cooldowns.join('|')}`
+                }
                 let params = {
                     page: this.pageIndex,
                     pageSize: this.pageSize,
@@ -170,7 +173,7 @@
                     eyeColors: eyeColors.join(','),
                     hairStyles: hairStyles.join(','),
                     attributes: attributes.join(','),
-                    filters: '',
+                    filters: filter,
                     sort: this.sort.id
                 };
                 let requestParams = {};
@@ -194,8 +197,6 @@
                 this.getList();
             }
         },
-        created() {
-        },
         mounted() {
             this.getList();
         },
@@ -207,7 +208,55 @@
                 isInjected: state => state.tron.tron.isInjected,
                 coinbase: state => state.tron.tron.coinbase,
                 balance: state => state.tron.tron.balance
-            })
+            }),
+            hairColors() {
+                let result = [];
+                let hairColors = ['blonde', 'brown', 'black', 'blue', 'pink', 'purple', 'green', 'red', 'silver', 'white', 'orange', 'aqua', 'grey']
+                for(let item of hairColors) {
+                    result.push({
+                        id: item,
+                        name: this.$t(item),
+                        active: false
+                    })
+                }
+                return result;
+            },
+            eyeColors() {
+                let result = [];
+                let eyeColors = ['blue', 'red', 'brown', 'green', 'purple', 'yellow', 'pink', 'aqua', 'black', 'orange'];
+                for(let item of eyeColors) {
+                    result.push({
+                        id: item,
+                        name: this.$t(item),
+                        active: false
+                    })
+                }
+                return result;
+            },
+            hairStyles() {
+                let result = [];
+                let hairStyles = ['long hair', 'short hair', 'twintails', 'drill hair', 'ponytail'];
+                for(let item of hairStyles) {
+                    result.push({
+                        id: item,
+                        name: this.$t(item),
+                        active: false
+                    })
+                }
+                return result;
+            },
+            attributes() {
+                let result = [];
+                let attributes =  ['dark skin', 'blush', 'smile', 'open mouth', 'hat', 'ribbon', 'glasses'];
+                for(let item of attributes) {
+                    result.push({
+                        id: item,
+                        name: this.$t(item),
+                        active: false
+                    })
+                }
+                return result;
+            }
         },
     }
 </script>

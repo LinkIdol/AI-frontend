@@ -43,7 +43,7 @@
                                     <img :src="CONFIG.IMG_SERVER+idol.Pic" style="width: 100%;">
                                 </div>
                                 <div style="margin-top: 20px;">
-                                    <span>{{$t('num_gen',{num: idol.Genes})}}#{{idol.TokenId}}</span>
+                                    <span>{{$t('num_gen',{num: idol.Generation})}}#{{idol.TokenId}}</span>
                                 </div>
                             </div>
                         </div>
@@ -78,10 +78,14 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <div>
-                                        <span>价格</span>
+                                    <div style="margin-bottom: 10px;">
+                                        <span>{{$t('price')}}</span>
                                     </div>
-                                    <canvas id="price-chart" width="250" height="100"></canvas>
+                                    <div style="display: flex;align-items: center;justify-content: flex-start;">
+                                        <div id="price-chart" style="width: 150px;height: 50px;"></div>
+                                        <div style="margin-left: 20px;"><span>{{$t('current')}}:</span><span>{{currentPrice}} TRX</span></div>
+                                    </div>
+                                    <!--<canvas id="price-chart" width="250" height="100"></canvas>-->
                                 </div>
                                 <div style="display: flex;">
                                     <!--<div style="margin-right: 10px;">
@@ -90,7 +94,7 @@
                                     </div>-->
                                     <div>
                                         <div>{{$t('cooling_state')}}</div>
-                                        <div>{{coolDown[idol.Cooldown]}}</div>
+                                        <div>{{getCooldown(idol.CooldownIndex)}}</div>
                                     </div>
                                 </div>
                                 <div>
@@ -134,7 +138,7 @@
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="showEdit = false">{{$t('cancel')}}</el-button>
-                <el-button type="primary" @click="editIdol">$t('determine')</el-button>
+                <el-button type="primary" @click="editIdol">{{$t('determine')}}</el-button>
             </span>
         </el-dialog>
         <el-dialog :title="$t('sale')+'idol'" :visible.sync="showSale" width="400px">
@@ -161,7 +165,7 @@
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="showSale = false">{{$t('cancel')}}</el-button>
-                <el-button type="primary" @click="saleIdol">$t('determine')</el-button>
+                <el-button type="primary" @click="saleIdol">{{$t('determine')}}</el-button>
               </span>
         </el-dialog>
         <el-dialog :title="$t('gift')+'idol'" :visible.sync="showGift" width="500px">
@@ -172,12 +176,16 @@
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="showGift = false">{{$t('cancel')}}</el-button>
-                <el-button type="primary" @click="giftIdol">$t('determine')</el-button>
+                <el-button type="primary" @click="giftIdol">{{$t('determine')}}</el-button>
             </span>
         </el-dialog>
     </div>
 </template>
 <script>
+    import * as echarts from 'echarts/lib/echarts';
+    import 'echarts/lib/chart/line';
+    import 'echarts/lib/component/tooltip';
+
     export default {
         name: 'Detail',
         data() {
@@ -235,12 +243,12 @@
                     address: ''
                 },
                 owner: 'TLxQvu9k12tvXt8XzDXHqRRv2wSXp3kpw7',
-                currentAddress: ''
+                currentAddress: '',
+                currentPrice: ''
             }
         },
         created() {
             this.id = this.$route.params.id;
-            this.getDetail();
         },
         methods: {
             async buyIdol() {
@@ -382,6 +390,9 @@
                     this.loading = false;
                     if (res.code === 0) {
                         this.idol = res.data;
+                        if (res.data.IsForSale === 1) {
+                            this.draw();
+                        }
                     }
                 })
             },
@@ -433,16 +444,72 @@
                 return shareURL;
             },
             draw() {
-                let canvas = document.getElementById('price-chart');
-                if(!canvas.getContext) return;
-                let ctx = canvas.getContext("2d");
-                ctx.fillStyle = "#333077";
-                ctx.beginPath();
-                ctx.moveTo(0, 0);
-                ctx.lineTo(0, 100);
-                ctx.lineTo(250, 100);
-                ctx.lineTo(250, 50);
-                ctx.fill();
+                let { StartedAt, Duration, StartingPrice, EndingPrice } = this.idol;
+                let xData = [];
+                let yData = [];
+                xData.push(this.util.formatDateTime(new Date(StartedAt), 'yyyy-MM-dd hh:mm:ss'));
+                yData.push(window.tronWeb.fromSun(StartingPrice));
+                // per minute
+                for (let i = StartedAt + 60000; i < StartedAt + Duration; i+=60000) {
+                    xData.push(this.util.formatDateTime(new Date(i), 'yyyy-MM-dd hh:mm:ss'));
+                    yData.push(window.tronWeb.fromSun(StartingPrice+Math.floor(((EndingPrice-StartingPrice)/Duration)*(i-StartedAt-60000))));
+                }
+                xData.push(this.util.formatDateTime(new Date(StartedAt + Duration), 'yyyy-MM-dd hh:mm:ss'));
+                yData.push(window.tronWeb.fromSun(EndingPrice));
+                console.log(xData, yData);
+                let timestamp = new Date().getTime();
+                if (timestamp >= StartedAt + Duration) {
+                    this.currentPrice = EndingPrice
+                } else {
+                    this.currentPrice = StartingPrice + Math.floor(((EndingPrice-StartingPrice)/Duration) * (timestamp-StartedAt));
+                }
+                this.currentPrice = window.tronWeb.fromSun(this.currentPrice);
+                echarts.init(document.getElementById('price-chart')).setOption({
+                    xAxis: {
+                        type: 'category',
+                        show: false,
+                        boundaryGap: false,
+                        interval: 1,
+                        data:xData
+                    },
+                    yAxis: {
+                        type: 'value',
+                        show: false
+                    },
+                    tooltip: {
+                        confine: true,
+                        trigger: 'axis',
+                        backgroundColor: '#333077',
+                        formatter: '{b0} <br />{c0} TRX',
+                        textStyle: {
+                            fontSize: 10
+                        }
+                    },
+                    grid: [{
+                        top: 0,
+                        width: '100%',
+                        bottom: '0%',
+                        left: 0
+                    }],
+                    series: [{
+                        data: yData,
+                        type: 'line',
+                        symbol: 'none',
+                        lineStyle: {
+                            color: '#333077'
+                        },
+                        areaStyle: {
+                            color: '#333077'
+                        }
+                    }]
+                });
+            },
+            getCooldown(i) {
+                if (i>=0 && i<=3) return 'Ultra Rapid'
+                if (i>=4 && i<=6) return 'Specially Super Rapid'
+                if (i>=7 && i<=9) return 'Super Rapid'
+                if (i>=10 && i<=11) return 'Rapid'
+                if (i>=12 && i<=13) return 'Normal'
             }
         },
         computed: {
@@ -466,11 +533,11 @@
             }
         },
         mounted() {
+            this.getDetail();
             this.currentAddress = window.tronWeb.defaultAddress.base58;
-            this.draw();
-            this.API.getIdolPrice(this.id).then(res => {
+            /*this.API.getIdolPrice(this.id).then(res => {
                 console.log(res);
-            });
+            });*/
         }
     }
 </script>

@@ -3,7 +3,7 @@ import config from './config'
 import SaleClockAuction from '../util/json/SaleClockAuction.json'
 import KittyCore from '../util/json/KittyCore.json'
 import SiringClockAuction from '../util/json/SiringClockAuction.json'
-axios.defaults.withCredentials = true;
+//axios.defaults.withCredentials = true;
 const instance = axios.create({
     baseURL: config.BASE_URL
 });
@@ -25,6 +25,7 @@ export default {
         return instance.request({
             url:'/user/register',
             method: 'post',
+            withCredentials: true,
             data
         }).then(function (response) {
             return response.data;
@@ -38,6 +39,7 @@ export default {
         return await instance.request({
             url:'/user/login',
             method: 'post',
+            withCredentials: true,
             data
         }).then(function (response) {
             return response.data;
@@ -49,6 +51,7 @@ export default {
         return instance.request({
             url:'/idol/getMarketIdols',
             method: 'get',
+            withCredentials: true,
             params
         }).then(function (response) {
             return response.data;
@@ -58,6 +61,7 @@ export default {
         return instance.request({
             url:'/idol/getMyIdols',
             method: 'get',
+            withCredentials: true,
             params
         }).then(function (response) {
             return response.data;
@@ -71,6 +75,7 @@ export default {
         return instance.request({
             url:'/idol/getIdol',
             method: 'get',
+            withCredentials: true,
             params
         }).then(function (response) {
             return response.data;
@@ -84,6 +89,7 @@ export default {
         return instance.request({
             url:'/idol/like',
             method: 'post',
+            withCredentials: true,
             data
         }).then(function (response) {
             return response.data;
@@ -97,6 +103,7 @@ export default {
         return instance.request({
             url:'/idol/unlike',
             method: 'post',
+            withCredentials: true,
             data
         }).then(function (response) {
             return response.data;
@@ -114,6 +121,7 @@ export default {
         return await instance.request({
             url:'/idol/setName',
             method: 'post',
+            withCredentials: true,
             data
         }).then(function (response) {
             return response.data;
@@ -130,6 +138,7 @@ export default {
         return await instance.request({
             url:'/idol/setBio',
             method: 'post',
+            withCredentials: true,
             data
         }).then(function (response) {
             return response.data;

@@ -12,7 +12,7 @@
                 <img :src="CONFIG.IMG_SERVER + idol.Pic" class="avatar-img">
             </div>
             <div class="body-middle">
-                <span>{{$t('num_gen', {num:idol.Genes})}} · R</span>
+                <span>{{$t('num_gen', {num:idol.Generation})}} · R</span>
             </div>
             <div class="body-bottom">
                 <span>#{{idol.TokenId}}</span>

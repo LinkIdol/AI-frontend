@@ -11,7 +11,7 @@
                 </div>
                 <div style="font-size: 14px;margin-left: 20px;">
                     <span style="color: #aaa;">{{$t('balance')}}: </span>
-                    <span>{{balance}} trx</span>
+                    <span>{{trxBalance}} trx</span>
                 </div>
             </div>
         </div>
@@ -319,7 +319,10 @@
                 isInjected: state => state.tron.tron.isInjected,
                 coinbase: state => state.tron.tron.coinbase,
                 balance: state => state.tron.tron.balance
-            })
+            }),
+            trxBalance() {
+                return window.tronWeb.fromSun(this.balance)
+            }
         }
     }
 </script>
