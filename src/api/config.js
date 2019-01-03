@@ -1,5 +1,5 @@
 export default {
-    BASE_URL: 'http://47.100.77.82:7001', // 47.100.77.82
+    BASE_URL: 'http://127.0.0.1:7001', // 47.100.77.82
     IMG_SERVER: 'http://img.newcomegame.com',
 
     Web3_KittyCore: '0x34d8bc4655937395cce625fc8971419e7f975587',

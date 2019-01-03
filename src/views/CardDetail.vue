@@ -77,7 +77,7 @@
                                         <span class="labelContent">{{idol.EyeColor}} eye</span>
                                     </div>
                                 </div>
-                                <div>
+                                <div :class="{'dn': !canBuy}">
                                     <div style="margin-bottom: 10px;">
                                         <span>{{$t('price')}}</span>
                                     </div>
@@ -542,6 +542,9 @@
     }
 </script>
 <style lang="scss" scoped>
+    .dn {
+        display: none;
+    }
     #price-chart {
         cursor: pointer;
     }
