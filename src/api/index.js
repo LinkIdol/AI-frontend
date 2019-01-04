@@ -189,5 +189,32 @@ export default {
     },
     getIdolPrice(id) {
         return window.tronWeb.contract(SiringClockAuction.abi, config.TronWeb_SiringClockAuction).getCurrentPrice(id).call();
-    }
+    },
+    giveBirth(matronId) {
+        return window.tronWeb.contract(KittyCore.abi, config.TronWeb_KittyCore).giveBirth(matronId).send({
+            callValue: 0,
+            shouldPollResponse: false
+        });
+    },
+    // 创建出租
+    createSiringAuction(id, startingPrice, endingPrice, duration) {
+        return window.tronWeb.contract(KittyCore.abi, config.TronWeb_KittyCore).createSiringAuction(id, startingPrice, endingPrice, duration).send({
+            callValue: 0,
+            shouldPollResponse: false
+        });
+    },
+    // 取消出租
+    cancelAuction(id) {
+        return window.tronWeb.contract(SiringClockAuction.abi, config.TronWeb_SiringClockAuction).cancelAuction(2).send({
+            callValue: 0,
+            shouldPollResponse: false
+        });
+    },
+    // 和租出的繁殖
+    bidOnSiringAuction(sireId, matronId, price) {
+        return window.tronWeb.contract(KittyCore.abi, config.TronWeb_KittyCore).bidOnSiringAuction(sireId, matronId).send({
+            callValue: price,
+            shouldPollResponse: false
+        });
+    },
 }

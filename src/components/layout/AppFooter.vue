@@ -66,18 +66,21 @@
                 }, {
                     value: 'zh',
                     label: '简体中文'
-                }, {
+                }, /*{
                     value: 'zh_tw',
                     label: '繁體中文'
-                }],
+                }*/],
                 lang: 'zh'
             }
         },
         mounted() {
+            this.lang = this.util.getCookie('lang') || 'zh'
+            this.$i18n.locale = this.util.getCookie('lang') || 'zh';
         },
         methods: {
             langChange(lang) {
                 this.$i18n.locale = lang;
+                this.util.setCookie('lang', lang);
             }
         }
     }

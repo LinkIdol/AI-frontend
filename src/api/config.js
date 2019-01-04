@@ -1,5 +1,6 @@
+console.log(process.env.NODE_ENV);
 export default {
-    BASE_URL: 'http://47.100.77.82:7001', // 47.100.77.82
+    BASE_URL: 'https://idolapi.newcomegame.com', // 47.100.77.82 // https://idolapi.newcomegame.com
     IMG_SERVER: 'http://img.newcomegame.com',
 
     Web3_KittyCore: '0x34d8bc4655937395cce625fc8971419e7f975587',

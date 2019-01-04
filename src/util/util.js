@@ -37,34 +37,18 @@ export default {
         let sign = await window.tronWeb.trx.signMessage(hexStr, privateKey);
         return sign;
     },
-    setCookie(name,value)
-    {
-        let Days = 30;
-        let exp = new Date();
-        exp.setTime(exp.getTime() + Days*24*60*60*1000);
-        document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
+    setCookie(name, value, days = 30) {
+        let d = new Date;
+        d.setTime(d.getTime() + 24*60*60*1000*days);
+        document.cookie = name + "=" + value + ";path=/;expires=" + d.toGMTString();
     },
-    getCookie(name){
-        let cookieName = encodeURIComponent(name)+"=",
-            cookieStart=document.cookie.indexOf(cookieName),
-            cookieValue=null;
-        if(cookieStart>-1){
-            let cookieEnd=document.cookie.indexOf(";",cookieStart);
-            if(cookieEnd === -1){
-                cookieEnd=document.cookie.length;
-            }
-            cookieValue=decodeURIComponent(document.cookie.substring(cookieStart+document.cookie.length,cookieEnd));
-        }
-        return cookieValue;
+    getCookie(name) {
+        let v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+        return v ? v[2] : null;
     },
     delCookie(name)
     {
-        let exp = new Date();
-        exp.setTime(exp.getTime() - 1);
-        let cval = this.getCookie(name);
-        if(cval!=null) {
-            document.cookie= name + "="+cval+";expires="+exp.toGMTString();
-        }
+        this.setCookie(name, '', -1);
     },
     formatDateTime(dateTime, fmt) {
         let o = {

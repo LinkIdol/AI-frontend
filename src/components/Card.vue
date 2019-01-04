@@ -124,6 +124,7 @@
         background: linear-gradient(-45deg, transparent 10px, $border-color 0);
     }
     .body-top {
+        height: 16px;
         background-color: #404040;
         font-size: 12px;
         text-align: right;

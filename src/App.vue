@@ -23,8 +23,6 @@
             AppFooter
         },
         mounted() {
-            console.log(this.$store);
-            console.log('app mounted', window.tronWeb);
             if (!window.tronWeb.ready) {
                 this.$notify.info({
                     title: this.$t('tips'),

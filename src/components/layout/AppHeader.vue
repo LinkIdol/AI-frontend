@@ -66,14 +66,7 @@
                             title: this.$t('tips'),
                             message: this.$t('login_success')
                         });
-                        let address = window.tronWeb.defaultAddress.base58;
-                        this.API.login({
-                            address: address
-                        }).then(res => {
-                            if (res.code === 0) {
-                                this.util.setCookie('access_token', res.data.access_token);
-                            }
-                        });
+                        this.$store.dispatch('registerTronWeb');
                     }
                 }
             },

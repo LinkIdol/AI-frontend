@@ -20,9 +20,17 @@
                     </el-menu>
                     <div class="c-input">
                         <el-input
+                                ref="SearchInput"
                                 :placeholder="$t('number') + ' 、' + $t('name') + ' 、#' + $t('label') + '…'"
+                                v-model="searchInput"
+                                @focus="showSearchBox = true"
+                                @blur="blurInput"
                                 prefix-icon="el-icon-search" clearable>
                         </el-input>
+                        <div class="search-box" v-if="showSearchBox && searchInput.length > 0">
+                            <div v-if="/^[\d]+$/.test(searchInput)" @click="toDetail">ID: {{searchInput}}</div>
+                            <div @click="searchName">Name: {{searchInput}}</div>
+                        </div>
                     </div>
                 </div>
                 <div class="menu-container" onselectstart="return false;" >
@@ -137,16 +145,43 @@
                 ],
                 sort: {id: '+id', name : this.$t('ID_asc')},
                 filterActive: false,
-                sortBoxActive: false
+                sortBoxActive: false,
+                searchInput: '',
+                showSearchBox: false,
+                filterName: ''
             }
         },
         methods: {
+            blurInput() {
+                /*console.log('blur');
+                setTimeout(() => {
+                    this.showSearchBox = false
+                },1000);*/
+            },
+            toDetail() {
+                /*this.$refs.SearchInput.focus();
+                const { href } = this.$router.resolve({
+                    path: `/card/${this.searchInput}`
+                });
+                window.open(href, '_blank');*/
+                this.showSearchBox = false;
+                this.$router.push({
+                    path: `/card/${this.searchInput}`
+                })
+            },
+            searchName() {
+                this.showSearchBox = false;
+                this.pageIndex = 1;
+                this.getList();
+            },
             activeAttr(attr, i) {
                 this[attr][i].active = !this[attr][i].active;
+                this.pageIndex = 1;
                 this.getList();
             },
             handleSelect(key) {
                 this.category = key;
+                this.pageIndex = 1;
                 this.getList();
             },
             getList() {
@@ -164,6 +199,13 @@
                 let filter = '';
                 if (cooldowns.length > 0) {
                     filter = `cooldown:${cooldowns.join('|')}`
+                }
+                if (this.searchInput.length > 0) {
+                    if (filter.length > 0) {
+                        filter += `,name:${this.searchInput}`
+                    } else {
+                        filter += `name:${this.searchInput}`
+                    }
                 }
                 let params = {
                     page: this.pageIndex,
@@ -266,6 +308,25 @@
         text-align: center;
         color: #BDBDBD;
     }
+    .search-box {
+        position: absolute;
+        left: 30px;
+        top: 50px;
+        z-index: 10;
+        color: #BDBDBD;
+        font-size: 14px;
+        background-color: #191428;
+        box-shadow: 0 5px 5px -3px rgba(0,0,0,.2), 0 8px 10px 1px rgba(0,0,0,.14), 0 3px 14px 2px rgba(0,0,0,.12);
+    }
+    .search-box div {
+        padding: 10px;
+        min-width: 100px;
+    }
+    .search-box div:hover {
+        background-color: #383838;
+        color: #fff;
+        cursor: pointer;
+    }
     .sort-box {
         position: absolute;
         right: 0;
@@ -351,6 +412,7 @@
     }
 
     .c-input {
+        position: relative;
         align-self: stretch;
         display: flex;
         align-items: center;
