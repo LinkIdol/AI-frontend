@@ -1,6 +1,6 @@
 <template>
     <div class="card" v-loading="loading" element-loading-background="rgba(25,20,40, 0.8)">
-        <div v-if="hasIdol">
+        <div :class="{'dn': !hasIdol}">
             <div class="fixed-width" style="display: flex;align-items: center;justify-content: space-between;">
                 <!--<button class="idol-button">
                     <span>{{$t('edit')}}</span>
@@ -15,8 +15,11 @@
                     <a class="btn btn-plain" @click="buyIdol" v-if="canBuy">
                         <span>{{$t('buy')}}</span>
                     </a>
-                    <a class="btn btn-plain" @click="showSale=true" v-if="isOwner">
+                    <a class="btn btn-plain" @click="showSale=true" v-if="isOwner && !canBuy">
                         <span>{{$t('sell')}}</span>
+                    </a>
+                    <a class="btn btn-plain" @click="cancelSale" v-if="isOwner && canBuy">
+                        <span>{{$t('cancel_sell')}}</span>
                     </a>
                     <a class="btn btn-plain" @click="showGift=true" v-if="isOwner">
                         <span>{{$t('gift')}}</span>
@@ -27,7 +30,7 @@
                     <a class="btn btn-plain" @click="showRent = true" v-if="isForRental && isOwner">
                         <span>{{$t('rent')}}</span>
                     </a>
-                    <a class="btn btn-plain" @click="cancelRent" v-if="isRental && isOwner">
+                    <a class="btn btn-plain" @click="cancelRent" v-if="isOwner && isRental">
                         <span>{{$t('cancel_rent')}}</span>
                     </a>
                     <a class="btn btn-plain" @click="showBreed = true" v-if="!isOwner && isRental">
@@ -85,9 +88,9 @@
                                         </div>
                                         <div style="display: flex;flex-wrap: wrap;align-items: flex-start;">
                                             <span class="labelContent" v-for="(item, i) in attributes" :key="i">{{$t(item)}}</span>
-                                            <span class="labelContent">{{$t(idol.HairColor)}} {{$t('hair')}}</span>
-                                            <span class="labelContent">{{$t(idol.HairStyle)}} {{$t('hair')}}</span>
-                                            <span class="labelContent">{{$t(idol.EyeColor)}} {{$t('eye')}}</span>
+                                            <span class="labelContent">{{$t(idol.HairColor)}}{{$t('hair')}}</span>
+                                            <span class="labelContent">{{$t(idol.HairStyle)}}{{$t('hair')}}</span>
+                                            <span class="labelContent">{{$t(idol.EyeColor)}}{{$t('eye')}}</span>
                                         </div>
                                     </div>
                                     <div :class="{'dn': !canBuy}">
@@ -106,11 +109,11 @@
                                             <div>...</div>
                                         </div>-->
                                         <div>
-                                            <div>{{$t('cooling_state')}}</div>
+                                            <div>{{$t('cooldown')}}</div>
                                             <div>{{cooldown}}</div>
                                         </div>
                                         <div style="margin-left: 20px;">
-                                            <div>{{$t('other_state')}}</div>
+                                            <div>{{$t('cooling_state')}}</div>
                                             <div>{{otherState}}</div>
                                         </div>
                                     </div>
@@ -246,7 +249,7 @@
                 </span>
             </el-dialog>
         </div>
-        <div style="color: #fff;min-height: 400px;text-align: center" v-else>
+        <div style="color: #fff;min-height: 400px;text-align: center" :class="{'dn': hasIdol}">
             <p style="line-height: 400px;">{{$t('not_find_data')}}~~</p>
         </div>
     </div>
@@ -323,7 +326,7 @@
                 owner: 'TLxQvu9k12tvXt8XzDXHqRRv2wSXp3kpw7',
                 currentAddress: '',
                 currentPrice: '',
-                hasIdol: false,
+                hasIdol: true,
                 myIdolList: []
             }
         },
@@ -331,6 +334,30 @@
             this.id = this.$route.params.id;
         },
         methods: {
+            cancelSale() {
+                const loading = this.$loading({
+                    lock: true,
+                    text: this.$t('operation_progress'),
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+                this.API.cancelSale(this.id).then((res) => {
+                    console.log(res);
+                    loading.close();
+                    this.$message({
+                        message: this.$t('operation_success'),
+                        type: 'success'
+                    });
+                    this.getDetail();
+                }).catch(err => {
+                    console.log(err);
+                    loading.close();
+                    this.$message({
+                        message: `${this.$t('operation_failed')}，${err}`,
+                        type: 'error'
+                    });
+                })
+            },
             rentBreed() {
                 this.$refs['breedForm'].validate((valid) => {
                     if (valid) {
@@ -349,7 +376,6 @@
                                 message: this.$t('operation_success'),
                                 type: 'success'
                             });
-                            this.getList();
                         }).catch(err => {
                             console.log(err);
                             loading.close();
@@ -366,14 +392,17 @@
             rentIdol() {
                 this.$refs['saleParams'].validate((valid) => {
                     if (valid) {
-                        this.showSale = false;
+                        this.showRent = false;
                         const loading = this.$loading({
                             lock: true,
                             text: this.$t('operation_progress'),
                             spinner: 'el-icon-loading',
                             background: 'rgba(0, 0, 0, 0.7)'
                         });
-                        this.API.createSiringAuction(this.id, this.saleParams.startPrice, this.saleParams.endPrice, this.saleParams.duration).then((res) => {
+                        let startPrice = window.tronWeb.toSun(this.saleParams.startPrice);
+                        let endPrice = window.tronWeb.toSun(this.saleParams.endPrice);
+                        let duration = this.saleParams.duration * 86400;
+                        this.API.createSiringAuction(this.id, startPrice, endPrice, duration).then((res) => {
                             console.log(res);
                             loading.close();
                             this.$message({
@@ -450,6 +479,7 @@
                     spinner: 'el-icon-loading',
                     background: 'rgba(0, 0, 0, 0.7)'
                 });
+                console.log(price);
                 this.API.buyIdol(this.id, price).then((res) => {
                     console.log(res);
                     loading.close();
@@ -477,7 +507,10 @@
                             spinner: 'el-icon-loading',
                             background: 'rgba(0, 0, 0, 0.7)'
                         });
-                        this.API.saleIdol(this.id, this.saleParams.startPrice, this.saleParams.endPrice, this.saleParams.duration).then((res) => {
+                        let startPrice = window.tronWeb.toSun(this.saleParams.startPrice);
+                        let endPrice = window.tronWeb.toSun(this.saleParams.endPrice);
+                        let duration = this.saleParams.duration * 86400;
+                        this.API.saleIdol(this.id, startPrice, endPrice, duration).then((res) => {
                             console.log(res);
                             loading.close();
                             this.$message({
@@ -639,6 +672,7 @@
             },
             draw() {
                 let { StartedAt, Duration, StartingPrice, EndingPrice } = this.idol;
+                Duration = Duration * 1000;
                 let xData = [];
                 let yData = [];
                 xData.push(this.util.formatDateTime(new Date(StartedAt), 'yyyy-MM-dd hh:mm:ss'));
@@ -754,7 +788,11 @@
                         return this.$t('cooling ready')
                     }
                 } else {
-                    return this.$t('cooling')
+                    if (this.isPregnant) {
+                        return this.$t('in pregnancy')
+                    } else {
+                        return this.$t('cooling')
+                    }
                 }
             },
             // 可出租

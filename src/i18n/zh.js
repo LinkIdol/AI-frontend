@@ -1,4 +1,7 @@
+import WHITE_PAPER from './whitepaper.zh.html'
+
 export default {
+    WHITE_PAPER,
     switch_lang: '切换语言',
     market: '市场',
     login: '登录',
@@ -59,7 +62,7 @@ export default {
     transaction_success: '交易成功',
     transaction_failed: '交易失败',
     operation_progress: '操作进行中...',
-    operation_success: '操作成功，30 秒内自动刷新数据。',
+    operation_success: '操作成功，30 秒内自动刷新数据。一切以区块链上交易记录为准，操作失败则退款。',
     operation_failed: '操作失败',
     copy_success: '复制成功',
     edit_success: '编辑成功',
@@ -90,6 +93,7 @@ export default {
     qq_group: 'QQ群',
     wechat_id: '微信',
     cooldown: '冷却速度',
+    cooldown_state: '冷却状态',
     price: '价格',
     current: '当前',
     giveBirth: '接生',
@@ -103,11 +107,13 @@ export default {
     'Rapid': '快速',
     'Normal': '正常',
     hair: '头发',
-    eyr: '眼睛',
+    eye: '眼睛',
     rent: '出租',
     cancel_rent: '取消出租',
     rent_duration: '出租周期',
     'Please choose your own idol': '请选择你自己的idol进行合成',
+    'in pregnancy': '怀孕中',
+    cancel_sell: '取消卖出',
 
     blonde: '金色',
     brown: '棕色',

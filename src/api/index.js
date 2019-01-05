@@ -205,7 +205,8 @@ export default {
     },
     // 取消出租
     cancelAuction(id) {
-        return window.tronWeb.contract(SiringClockAuction.abi, config.TronWeb_SiringClockAuction).cancelAuction(2).send({
+        console.log('123', id)
+        return window.tronWeb.contract(SiringClockAuction.abi, config.TronWeb_SiringClockAuction).cancelAuction(id).send({
             callValue: 0,
             shouldPollResponse: false
         });
@@ -214,6 +215,13 @@ export default {
     bidOnSiringAuction(sireId, matronId, price) {
         return window.tronWeb.contract(KittyCore.abi, config.TronWeb_KittyCore).bidOnSiringAuction(sireId, matronId).send({
             callValue: price,
+            shouldPollResponse: false
+        });
+    },
+    // 取消卖出
+    cancelSale(id) {
+        return window.tronWeb.contract(SaleClockAuction.abi, config.TronWeb_SaleClockAuction).cancelAuction(id).send({
+            callValue: 0,
             shouldPollResponse: false
         });
     },

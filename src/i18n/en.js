@@ -1,4 +1,7 @@
+import WHITE_PAPER from './whitepaper.en.html'
+
 export default {
+    WHITE_PAPER,
     switch_lang: 'Switch Language',
     market: 'Market',
     login: 'Login',
@@ -59,7 +62,7 @@ export default {
     transaction_success: 'Transaction Successed',
     transaction_failed: 'Transaction Failed',
     operation_progress: 'Progressing...',
-    operation_success: 'Operation successed，will automatically refresh the data in 30 seconds ',
+    operation_success: 'Operation successed，will automatically refresh the data in 30 seconds.All transactions are subject to transaction records on the blockchain, and refunds are made if the operation fails. ',
     operation_failed: 'Operation Failed',
     copy_success: 'Copy success',
     edit_success: 'Edit success',
@@ -90,6 +93,7 @@ export default {
     qq_group: 'QQ Group',
     wechat_id: 'WeChat ID',
     cooldown: 'Cooldown',
+    cooldown_state: 'Cooldown State',
     price: 'Price',
     current: 'Current',
     giveBirth: 'Give Birth',
@@ -106,6 +110,8 @@ export default {
     cancel_rent: 'Cancel Rent',
     rent_duration: 'Duration',
     'Please choose your own idol': 'Please choose your own idol for synthesis',
+    'in pregnancy': 'In pregnancy',
+    cancel_sell: 'Cancel Sell',
 
     blonde: 'blonde',
     brown: 'brown',
