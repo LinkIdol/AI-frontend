@@ -12,7 +12,7 @@
                     </a>
                 </div>
                 <div>
-                    <a class="btn btn-plain" @click="buyIdol" v-if="canBuy">
+                    <a class="btn btn-plain" @click="buyIdol" v-if="canBuy && !isOwner">
                         <span>{{$t('buy')}}</span>
                     </a>
                     <a class="btn btn-plain" @click="showSale=true" v-if="isOwner && !canBuy">
@@ -21,7 +21,7 @@
                     <a class="btn btn-plain" @click="cancelSale" v-if="isOwner && canBuy">
                         <span>{{$t('cancel_sell')}}</span>
                     </a>
-                    <a class="btn btn-plain" @click="showGift=true" v-if="isOwner">
+                    <a class="btn btn-plain" @click="showGift=true" v-if="isOwner && !canBuy">
                         <span>{{$t('gift')}}</span>
                     </a>
                     <a class="btn btn-plain" @click="giveBirth" v-if="isPregnant && isReady">
@@ -334,6 +334,11 @@
             this.id = this.$route.params.id;
         },
         methods: {
+            updatePage() {
+                setTimeout(() => {
+                    this.getDetail();
+                }, 30000)
+            },
             cancelSale() {
                 const loading = this.$loading({
                     lock: true,
@@ -348,7 +353,7 @@
                         message: this.$t('operation_success'),
                         type: 'success'
                     });
-                    this.getDetail();
+                    this.updatePage();
                 }).catch(err => {
                     console.log(err);
                     loading.close();
@@ -376,6 +381,7 @@
                                 message: this.$t('operation_success'),
                                 type: 'success'
                             });
+                            this.updatePage();
                         }).catch(err => {
                             console.log(err);
                             loading.close();
@@ -409,12 +415,12 @@
                                 message: this.$t('operation_success'),
                                 type: 'success'
                             });
-                            this.getDetail();
+                            this.updatePage();
                         }).catch(err => {
                             console.log(err);
                             loading.close();
                             this.$message({
-                                message: `${this.$t('operation_failed')}，${err}`,
+                                message: `${this.$t('operation_failed')}`,
                                 type: 'error'
                             });
                         })
@@ -437,7 +443,7 @@
                         message: this.$t('operation_success'),
                         type: 'success'
                     });
-                    this.getDetail();
+                    this.updatePage();
                 }).catch(err => {
                     console.log(err);
                     loading.close();
@@ -461,7 +467,7 @@
                         message: this.$t('operation_success'),
                         type: 'success'
                     });
-                    this.getDetail();
+                    this.updatePage();
                 }).catch(err => {
                     console.log(err);
                     loading.close();
@@ -487,12 +493,12 @@
                         message: this.$t('transaction_success'),
                         type: 'success'
                     });
-                    this.getDetail();
+                    this.updatePage();
                 }).catch(err => {
                     console.log(err);
                     loading.close();
                     this.$message({
-                        message: `${this.$t('transaction_failed')}，${err}`,
+                        message: `${this.$t('transaction_failed')}`,
                         type: 'error'
                     });
                 })
@@ -517,12 +523,12 @@
                                 message: this.$t('operation_success'),
                                 type: 'success'
                             });
-                            this.getDetail();
+                            this.updatePage();
                         }).catch(err => {
                             console.log(err);
                             loading.close();
                             this.$message({
-                                message: `${this.$t('operation_failed')}，${err}`,
+                                message: `${this.$t('operation_failed')}`,
                                 type: 'error'
                             });
                         })
@@ -548,12 +554,12 @@
                                 message: this.$t('operation_success'),
                                 type: 'success'
                             });
-                            this.getDetail();
+                            this.updatePage();
                         }).catch(err => {
                             console.log(err);
                             loading.close();
                             this.$message({
-                                message: `${this.$t('operation_failed')}，${err}`,
+                                message: `${this.$t('operation_failed')}`,
                                 type: 'error'
                             });
                         })
@@ -673,14 +679,16 @@
             draw() {
                 let { StartedAt, Duration, StartingPrice, EndingPrice } = this.idol;
                 Duration = Duration * 1000;
+                StartedAt = StartedAt * 1000;
                 let xData = [];
                 let yData = [];
-                xData.push(this.util.formatDateTime(new Date(StartedAt), 'yyyy-MM-dd hh:mm:ss'));
-                yData.push(window.tronWeb.fromSun(StartingPrice));
+                /*xData.push(this.util.formatDateTime(new Date(StartedAt), 'yyyy-MM-dd hh:mm:ss'));
+                yData.push(window.tronWeb.fromSun(StartingPrice));*/
+                const interval = 60000*60;
                 // per minute
-                for (let i = StartedAt + 60000; i < StartedAt + Duration; i+=60000) {
+                for (let i = StartedAt + interval; i < StartedAt + Duration; i+=interval) {
                     xData.push(this.util.formatDateTime(new Date(i), 'yyyy-MM-dd hh:mm:ss'));
-                    yData.push(window.tronWeb.fromSun(StartingPrice+Math.floor(((EndingPrice-StartingPrice)/Duration)*(i-StartedAt-60000))));
+                    yData.push(window.tronWeb.fromSun(StartingPrice+Math.floor(((EndingPrice-StartingPrice)/Duration)*(i-StartedAt-interval))));
                 }
                 xData.push(this.util.formatDateTime(new Date(StartedAt + Duration), 'yyyy-MM-dd hh:mm:ss'));
                 yData.push(window.tronWeb.fromSun(EndingPrice));
@@ -809,7 +817,7 @@
             this.getMyIdolList();
             this.currentAddress = window.tronWeb.defaultAddress.base58;
             /*this.API.getIdolPrice(this.id).then(res => {
-                console.log(res);
+                console.log('call:', res);
             });*/
         }
     }

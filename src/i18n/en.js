@@ -59,7 +59,7 @@ export default {
     unlock_first: 'Please unlock your Tron Wallet',
     like_failure: 'Fail to like the idol',
     confirmation_transaction: 'Confriming the transaction，please wait for a minute...',
-    transaction_success: 'Transaction Successed',
+    transaction_success: 'Transaction Successed, will automatically refresh the data in 30 seconds.All transactions are subject to transaction records on the blockchain, and refunds are made if the operation fails. ',
     transaction_failed: 'Transaction Failed',
     operation_progress: 'Progressing...',
     operation_success: 'Operation successed，will automatically refresh the data in 30 seconds.All transactions are subject to transaction records on the blockchain, and refunds are made if the operation fails. ',

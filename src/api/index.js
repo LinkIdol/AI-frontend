@@ -205,7 +205,6 @@ export default {
     },
     // 取消出租
     cancelAuction(id) {
-        console.log('123', id)
         return window.tronWeb.contract(SiringClockAuction.abi, config.TronWeb_SiringClockAuction).cancelAuction(id).send({
             callValue: 0,
             shouldPollResponse: false

@@ -59,7 +59,7 @@ export default {
     unlock_first: '请先解锁波场钱包',
     like_failure: '点赞失败',
     confirmation_transaction: '交易确认中，请稍后...',
-    transaction_success: '交易成功',
+    transaction_success: '交易成功，30 秒内自动刷新数据。一切以区块链上交易记录为准，操作失败则退款。',
     transaction_failed: '交易失败',
     operation_progress: '操作进行中...',
     operation_success: '操作成功，30 秒内自动刷新数据。一切以区块链上交易记录为准，操作失败则退款。',
