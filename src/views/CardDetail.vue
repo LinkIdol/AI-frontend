@@ -36,6 +36,12 @@
                     <a class="btn btn-plain" @click="showBreed = true" v-if="!isOwner && isRental">
                         <span>{{$t('breed')}}</span>
                     </a>
+                    <el-upload
+                            action="string"
+                            :http-request="handleUploadImage"
+                            :file-list="fileList">
+                        <el-button size="small" type="primary">点击上传</el-button>
+                    </el-upload>
                 </div>
             </div>
             <div class="detail fixed-width">
@@ -258,7 +264,7 @@
     import * as echarts from 'echarts/lib/echarts';
     import 'echarts/lib/chart/line';
     import 'echarts/lib/component/tooltip';
-
+    import axios from 'axios'
     export default {
         name: 'Detail',
         data() {
@@ -327,13 +333,37 @@
                 currentAddress: '',
                 currentPrice: '',
                 hasIdol: true,
-                myIdolList: []
+                myIdolList: [],
+                fileList: []
             }
         },
         created() {
             this.id = this.$route.params.id;
         },
         methods: {
+            handleUploadImage(params) {
+                let reader = new FileReader();
+                reader.readAsDataURL(params.file);
+                reader.onload = (e) => {
+                    let formData = new FormData();
+                    formData.append('image', e.target.result);
+                    formData.append('id', this.util.uniqueid());
+                    formData.append('do_waifu2x', false);
+                    let loading = this.$loading({
+                        fullscreen: true,
+                        background: 'rgba(0, 0, 0, 0.5)',
+                        text: '文件上传中...'
+                    });
+                    axios.request({
+                        url: 'http://47.74.229.37:8000/post',
+                        method: 'post',
+                        data: formData
+                    }).then((res) => {
+                        loading.close();
+                        console.log(res)
+                    })
+                }
+            },
             updatePage() {
                 setTimeout(() => {
                     this.getDetail();
