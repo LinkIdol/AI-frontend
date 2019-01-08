@@ -36,12 +36,6 @@
                     <a class="btn btn-plain" @click="showBreed = true" v-if="!isOwner && isRental">
                         <span>{{$t('breed')}}</span>
                     </a>
-                    <el-upload
-                            action="string"
-                            :http-request="handleUploadImage"
-                            :file-list="fileList">
-                        <el-button size="small" type="primary">点击上传</el-button>
-                    </el-upload>
                 </div>
             </div>
             <div class="detail fixed-width">
@@ -60,13 +54,30 @@
                                 <div style="height: 47px;margin-bottom: 14px;display: flex;align-items: center;justify-content: center;">
                                     <span>{{idol.NickName}}</span>
                                 </div>
-                                <div style="height: 346px;display: flex;flex-direction: column;align-items: center;justify-content: center;">
-                                    <div class="image-outer">
-                                        <img :src="CONFIG.IMG_SERVER+idol.Pic" style="width: 100%;">
+                                <div class="idol-card-body">
+                                    <div class="image-outer"
+                                         v-loading="uploading"
+                                         element-loading-background="rgba(25,20,40, 0.5)"
+                                         :element-loading-text="$t('Idol generation, please wait')">
+                                        <img :src="avatarURL" style="width: 100%;">
                                     </div>
                                     <div style="margin-top: 20px;">
                                         <span>{{$t('num_gen',{num: idol.Generation})}}#{{idol.TokenId}}</span>
                                     </div>
+                                    <div class="upload-container" v-if="!hasAvatar">
+                                        <button class="upload-btn" :disabled="uploading" @click="setIdolAvatar">
+                                            {{$t('determine')}}
+                                        </button>
+                                        <el-upload
+                                                action="string"
+                                                :http-request="handleUploadImage"
+                                                :show-file-list="false"
+                                                :file-list="fileList"
+                                                :disabled="uploading">
+                                                <button class="upload-btn" :disabled="uploading">{{$t('upload_image')}}</button>
+                                        </el-upload>
+                                    </div>
+                                    <p v-if="!hasAvatar" style="font-weight: bolder;color: #656DF0;">{{$t('Please upload a 3D avatar')}}</p>
                                 </div>
                             </div>
                             <div class="profileBox panel">
@@ -264,7 +275,6 @@
     import * as echarts from 'echarts/lib/echarts';
     import 'echarts/lib/chart/line';
     import 'echarts/lib/component/tooltip';
-    import axios from 'axios'
     export default {
         name: 'Detail',
         data() {
@@ -334,33 +344,46 @@
                 currentPrice: '',
                 hasIdol: true,
                 myIdolList: [],
-                fileList: []
+                fileList: [],
+                uploading: false,
+                uploaded: false,
+                avatarID: ''
             }
         },
         created() {
             this.id = this.$route.params.id;
         },
         methods: {
+            setIdolAvatar() {
+                const loading = this.$loading({
+                    lock: true,
+                    text: this.$t('operation_progress'),
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+                this.API.setIdolAvatar({
+                    id: this.avatarID
+                }).then(() => {
+                    loading.close();
+                    this.getDetail();
+                })
+            },
             handleUploadImage(params) {
                 let reader = new FileReader();
                 reader.readAsDataURL(params.file);
                 reader.onload = (e) => {
                     let formData = new FormData();
-                    formData.append('image', e.target.result);
                     formData.append('id', this.util.uniqueid());
                     formData.append('do_waifu2x', false);
-                    let loading = this.$loading({
-                        fullscreen: true,
-                        background: 'rgba(0, 0, 0, 0.5)',
-                        text: '文件上传中...'
-                    });
-                    axios.request({
-                        url: 'http://47.74.229.37:8000/post',
-                        method: 'post',
-                        data: formData
-                    }).then((res) => {
-                        loading.close();
-                        console.log(res)
+                    formData.append('image', e.target.result);
+                    this.uploading = true;
+                    this.API.uploadAvatar(formData).then((res) => {
+                        this.avatarID = res.data.id_str
+                        setTimeout(() => {
+                            this.uploading = false;
+                            this.uploaded = true;
+                        }, 1000);
+                        console.log(res);
                     })
                 }
             },
@@ -791,6 +814,22 @@
             }
         },
         computed: {
+            hasAvatar() {
+                if (this.idol.Pic === '' || this.idol.Pic === undefined) {
+                    return false
+                }
+                return true;
+            },
+            avatarURL() {
+              if (this.idol.Pic === '' || this.idol.Pic === undefined) {
+                  if (this.avatarID === '') {
+                      return 'https://myblog-images1.oss-cn-beijing.aliyuncs.com/tronproducer/anonymous.png'
+                  } else {
+                      return this.CONFIG.PY_IMG_Prefix(this.avatarID);
+                  }
+              }
+              return this.CONFIG.IMG_SERVER + this.idol.Pic
+            },
             cooldown() {
                 let i = this.idol.CooldownIndex;
                 if (i>=0 && i<=3) return this.$t('Ultra Rapid');
@@ -853,6 +892,45 @@
     }
 </script>
 <style lang="scss" scoped>
+    .idol-card-body {
+        height: 346px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .upload-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 20px 30px;
+    }
+    .upload-btn {
+        background: none;
+        color: #fff;
+        border: 1px solid #fff;
+        min-width: 75px;
+        white-space: nowrap;
+        font-size: 15px;
+        text-align: center;
+        cursor: pointer;
+        padding: 2px 5px;
+        &:hover {
+            border-color: #ccc;
+            color: #ccc;
+        }
+        &:focus {
+            outline: none;
+        }
+        &+.upload-btn {
+            margin-right: 10px;
+        }
+        &:disabled {
+            cursor: not-allowed;
+        }
+    }
     .dn {
         display: none;
     }
@@ -1019,7 +1097,7 @@
         cursor: pointer;
         font-size: 14px;
         font-weight: 400;
-        line-height: 20px;
+        line-height: 40px;
         padding: 6px 20px;
         max-width: 160px;
         position: relative;

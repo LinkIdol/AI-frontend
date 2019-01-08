@@ -32,18 +32,18 @@
                         <el-menu-item index="forsale">{{$t('for_sale')}}</el-menu-item>
                         <el-menu-item index="rental">{{$t('rental')}}</el-menu-item>
                     </el-menu>
-                    <div class="c-input">
+                    <!--<div class="c-input">
                         <el-input
                                 :placeholder="$t('number') + ' 、' + $t('name') + ' 、#' + $t('label') + '…'"
                                 prefix-icon="el-icon-search" clearable>
                         </el-input>
-                    </div>
+                    </div>-->
                 </div>
                 <div class="menu-container" onselectstart="return false;" >
-                    <div class="menu-btn" :class="{'menu-btn-active': filterActive}" @click="filterActive=!filterActive">
+                    <!--<div class="menu-btn" :class="{'menu-btn-active': filterActive}" @click="filterActive=!filterActive">
                         <font-awesome-icon :icon="['fas', 'filter']" style="margin-right: 8px;"/>
                         <span>{{$t('filter')}}</span>
-                    </div>
+                    </div>-->
                     <div class="menu-btn" @click="sortBoxActive = !sortBoxActive">
                         <font-awesome-icon :icon="['fas', 'bars']" style="margin-right: 8px;"/>
                         <span>{{sort.name}}</span>
@@ -284,8 +284,6 @@
                 this.sort = item;
                 this.getList();
             }
-        },
-        created() {
         },
         mounted() {
             this.getList();

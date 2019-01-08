@@ -114,6 +114,9 @@ export default {
     'Please choose your own idol': '请选择你自己的idol进行合成',
     'in pregnancy': '怀孕中',
     cancel_sell: '取消卖出',
+    upload_image: '上传图片',
+    'Please upload a 3D avatar': '请务必上传三次元真人头像',
+    'Idol generation, please wait': 'idol生成中，请稍等...',
 
     blonde: '金色',
     brown: '棕色',

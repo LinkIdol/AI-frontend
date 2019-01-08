@@ -88,8 +88,9 @@
             })
         },
         watch: {
-            '$router'(val) {
-                console.log(val)
+            $route(to) {
+                console.log(to.name);
+                this.currentPage = to.name
             }
         }
     }

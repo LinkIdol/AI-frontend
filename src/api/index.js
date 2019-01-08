@@ -144,6 +144,20 @@ export default {
             return response.data;
         })
     },
+    async uploadAvatar(data) {
+        return axios.request({
+            method: 'post',
+            url: config.UPLOAD_URL,
+            data: data
+        })
+    },
+    setIdolAvatar(data = {}) {
+        return axios.request({
+            method: 'post',
+            url: '/idol/setIdol',
+            data: data
+        })
+    },
     buyIdol(id, price) {
         return window.tronWeb.contract(SaleClockAuction.abi, config.TronWeb_SaleClockAuction).bid(id).send({
             callValue: price,

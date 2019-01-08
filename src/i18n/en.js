@@ -112,6 +112,9 @@ export default {
     'Please choose your own idol': 'Please choose your own idol for synthesis',
     'in pregnancy': 'In pregnancy',
     cancel_sell: 'Cancel Sell',
+    upload_image: 'Upload Image',
+    'Please upload a 3D avatar': 'Please upload a 3D avatar',
+    'Idol generation, please wait': 'Idol generation, please wait...',
 
     blonde: 'blonde',
     brown: 'brown',
