@@ -28,6 +28,8 @@ export default {
     filter: '筛选',
     ID_asc: 'ID升序',
     ID_desc: 'ID降序',
+    price_asc: '价格升序',
+    price_desc: '价格降序',
     hair_color: '头发颜色',
     eye_color: '眼睛颜色',
     hair_style: '发型',

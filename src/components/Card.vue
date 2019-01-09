@@ -9,6 +9,7 @@
                 <span>{{idol.NickName}}</span>
             </div>
             <div class="image-inner">
+                <div class="price" v-if="hasPrice">≈ {{price}} <span>TRX</span></div>
                 <img :src="imgSrc" class="avatar-img">
             </div>
             <div class="body-middle">
@@ -110,6 +111,23 @@
                 } else {
                     return this.CONFIG.IMG_SERVER + this.idol.Pic;
                 }
+            },
+            hasPrice() {
+                return this.idol.IsForSale === 1;
+            },
+            price() {
+                let currentPrice = 0;
+                let { StartedAt, Duration, StartingPrice, EndingPrice } = this.idol;
+                Duration = Duration * 1000;
+                StartedAt = StartedAt * 1000;
+                let timestamp = new Date().getTime();
+                if (timestamp >= StartedAt + Duration) {
+                    currentPrice = EndingPrice
+                } else {
+                    currentPrice = StartingPrice + Math.floor(((EndingPrice-StartingPrice)/Duration) * (timestamp-StartedAt));
+                }
+                currentPrice = window.tronWeb.fromSun(currentPrice);
+                return parseFloat(currentPrice).toFixed(2);
             }
         }
     }
@@ -118,6 +136,16 @@
 <style lang="scss" scoped>
     $border-color: #656DF2;
     $width: 150px;
+    .price {
+        position: absolute;
+        background-color: rgba(64,64,64,0.7);
+        width: 100%;
+        text-align: center;
+        font-size: 10px;
+        padding: 2px 0;
+        z-index: 3;
+        top: 0;
+    }
     .idol {
         position: relative;
         font-size: 14px;

@@ -28,6 +28,8 @@ export default {
     filter: 'Filter',
     ID_asc: 'ID Ascending',
     ID_desc: 'ID Descending',
+    price_asc: 'Price Ascending',
+    price_desc: 'Price Descending',
     hair_color: 'Hair Color',
     eye_color: 'Eye Color',
     hair_style: 'Haircut',

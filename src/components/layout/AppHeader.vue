@@ -42,8 +42,8 @@
             }
         },
         mounted() {
-            let href = window.location.href;
-            this.currentPage = href.substring(href.lastIndexOf('/') + 1, href.length);
+            /*let href = window.location.href;
+            this.currentPage = href.substring(href.lastIndexOf('/') + 1, href.length);*/
         },
         methods: {
             async login() {
@@ -88,9 +88,11 @@
             })
         },
         watch: {
-            $route(to) {
-                console.log(to.name);
-                this.currentPage = to.name
+            $route: {
+                handler(to) {
+                    this.currentPage = to.name
+                },
+                immediate: true
             }
         }
     }

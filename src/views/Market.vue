@@ -142,7 +142,9 @@
                 ],
                 sorts: [
                     {id: '-id', name : this.$t('ID_desc')},
-                    {id: '+id', name : this.$t('ID_asc')}
+                    {id: '+id', name : this.$t('ID_asc')},
+                    /*{id: '-price', name : this.$t('price_desc')},
+                    {id: '+price', name : this.$t('price_asc')}*/
                 ],
                 sort: {id: '+id', name : this.$t('ID_asc')},
                 filterActive: false,
