@@ -9,7 +9,7 @@
                 <span>{{idol.NickName}}</span>
             </div>
             <div class="image-inner">
-                <img :src="CONFIG.IMG_SERVER + idol.Pic" class="avatar-img">
+                <img :src="imgSrc" class="avatar-img">
             </div>
             <div class="body-middle">
                 <span>{{$t('num_gen', {num:idol.Generation})}} · R</span>
@@ -101,6 +101,15 @@
                 }, (err, result) => {
                     console.log(err, result);
                 })*/
+            }
+        },
+        computed: {
+            imgSrc() {
+                if (this.idol.Pic === '') {
+                    return 'https://myblog-images1.oss-cn-beijing.aliyuncs.com/tronproducer/anonymous.png'
+                } else {
+                    return this.CONFIG.IMG_SERVER + this.idol.Pic;
+                }
             }
         }
     }

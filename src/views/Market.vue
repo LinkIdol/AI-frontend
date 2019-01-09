@@ -34,10 +34,10 @@
                     </div>
                 </div>
                 <div class="menu-container" onselectstart="return false;" >
-                    <div class="menu-btn" :class="{'menu-btn-active': filterActive}" @click="filterActive=!filterActive">
+                    <!--<div class="menu-btn" :class="{'menu-btn-active': filterActive}" @click="filterActive=!filterActive">
                         <font-awesome-icon :icon="['fas', 'filter']" style="margin-right: 8px;"/>
                         <span>{{$t('filter')}}</span>
-                    </div>
+                    </div>-->
                     <div class="menu-btn" @click="sortBoxActive = !sortBoxActive">
                         <font-awesome-icon :icon="['fas', 'bars']" style="margin-right: 8px;"/>
                         <span>{{sort.name}}</span>
@@ -105,6 +105,7 @@
             <el-pagination background
                     layout="prev, pager, next"
                     :page-size="pageSize"
+                    :current-page="pageIndex"
                     :total="pageCount" @current-change="handlePageChange">
             </el-pagination>
         </div>
@@ -182,6 +183,7 @@
             handleSelect(key) {
                 this.category = key;
                 this.pageIndex = 1;
+                this.$router.push({ path: 'market', query: { page: 1, category: key, sort: this.$route.query.sort || '+id'}});
                 this.getList();
             },
             getList() {
@@ -231,15 +233,33 @@
             handlePageChange(i) {
                 console.log(i);
                 this.pageIndex = i;
+                this.$router.push({ path: 'market', query: {
+                    page: i,
+                    category: this.$route.query.category || 'all' ,
+                    sort: this.$route.query.sort || '+id'
+                }});
                 this.getList();
             },
             sortChange(item) {
                 this.sortBoxActive = false;
+                this.$router.push({ path: 'market', query: {
+                    page: this.$route.query.page || 1,
+                    category: this.$route.query.category || 'all' ,
+                    sort: item.id
+                }});
                 this.sort = item;
                 this.getList();
             }
         },
         mounted() {
+            this.category = this.$route.query.category || 'all';
+            this.pageIndex = this.$route.query.page || 1;
+            let sortId = this.$route.query.sort || '+id';
+            this.sorts.forEach((item) => {
+                if(item.id === sortId) {
+                    this.sort = item
+                }
+            })
             this.getList();
         },
         beforeCreate () {

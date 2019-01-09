@@ -115,6 +115,7 @@ export default {
     upload_image: 'Upload Image',
     'Please upload a 3D avatar': 'Please upload a 3D avatar',
     'Idol generation, please wait': 'Idol generation, please wait...',
+    'Insufficient balance': 'Insufficient balance',
 
     blonde: 'blonde',
     brown: 'brown',

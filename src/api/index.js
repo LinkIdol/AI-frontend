@@ -152,10 +152,20 @@ export default {
         })
     },
     setIdolAvatar(data = {}) {
-        return axios.request({
+        return instance.request({
             method: 'post',
             url: '/idol/setIdol',
+            withCredentials: true,
             data: data
+        })
+    },
+    transfer(id) {
+        return instance.request({
+            method: 'post',
+            url: '/idol/Transfer',
+            data: {
+                tokenId: id
+            }
         })
     },
     buyIdol(id, price) {

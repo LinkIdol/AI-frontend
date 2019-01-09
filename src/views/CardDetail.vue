@@ -64,8 +64,8 @@
                                     <div style="margin-top: 20px;">
                                         <span>{{$t('num_gen',{num: idol.Generation})}}#{{idol.TokenId}}</span>
                                     </div>
-                                    <div class="upload-container" v-if="!hasAvatar">
-                                        <button class="upload-btn" :disabled="uploading" @click="setIdolAvatar">
+                                    <div class="upload-container" v-if="!hasAvatar && isOwner">
+                                        <button class="upload-btn" v-if="uploaded" :disabled="uploading" @click="setIdolAvatar">
                                             {{$t('determine')}}
                                         </button>
                                         <el-upload
@@ -77,7 +77,7 @@
                                                 <button class="upload-btn" :disabled="uploading">{{$t('upload_image')}}</button>
                                         </el-upload>
                                     </div>
-                                    <p v-if="!hasAvatar" style="font-weight: bolder;color: #656DF0;">{{$t('Please upload a 3D avatar')}}</p>
+                                    <p v-if="!hasAvatar && isOwner" style="font-weight: bolder;color: #656DF0;">{{$t('Please upload a 3D avatar')}}</p>
                                 </div>
                             </div>
                             <div class="profileBox panel">
@@ -99,7 +99,7 @@
                                             <span v-if="labels.length <= 0">{{$t('no_label')}}</span>
                                         </div>
                                     </div>
-                                    <div>
+                                    <!--<div>
                                         <div>
                                             <span>{{$t('attribute')}}</span>
                                         </div>
@@ -109,8 +109,8 @@
                                             <span class="labelContent">{{$t(idol.HairStyle)}}{{$t('hair')}}</span>
                                             <span class="labelContent">{{$t(idol.EyeColor)}}{{$t('eye')}}</span>
                                         </div>
-                                    </div>
-                                    <div :class="{'dn': !canBuy}">
+                                    </div>-->
+                                    <div :class="{'dn': (!canBuy && !isRental) }">
                                         <div style="margin-bottom: 10px;">
                                             <span>{{$t('price')}}</span>
                                         </div>
@@ -362,10 +362,13 @@
                     background: 'rgba(0, 0, 0, 0.7)'
                 });
                 this.API.setIdolAvatar({
+                    tokenId: this.id,
                     id: this.avatarID
                 }).then(() => {
-                    loading.close();
-                    this.getDetail();
+                    setTimeout(() => {
+                        loading.close();
+                        this.getDetail();
+                    }, 2000);
                 })
             },
             handleUploadImage(params) {
@@ -416,7 +419,16 @@
                     });
                 })
             },
-            rentBreed() {
+            async rentBreed() {
+                let price = window.tronWeb.toSun(this.currentPrice);
+                let balance = await window.tronWeb.trx.getBalance(window.tronWeb.defaultAddress.base58);
+                if (parseFloat(price) > parseFloat(balance)) {
+                    this.$message({
+                        message: this.$t('Insufficient balance'),
+                        type: 'error'
+                    });
+                    return;
+                }
                 this.$refs['breedForm'].validate((valid) => {
                     if (valid) {
                         this.showBreed = false;
@@ -426,7 +438,6 @@
                             spinner: 'el-icon-loading',
                             background: 'rgba(0, 0, 0, 0.7)'
                         });
-                        let price = window.tronWeb.toSun(this.currentPrice);
                         this.API.bidOnSiringAuction(this.id, this.breedForm.matronId, price).then((res) => {
                             console.log(res);
                             loading.close();
@@ -532,6 +543,14 @@
             },
             async buyIdol() {
                 let price = window.tronWeb.toSun(this.currentPrice);
+                let balance = await window.tronWeb.trx.getBalance(window.tronWeb.defaultAddress.base58);
+                if (parseFloat(price) > parseFloat(balance)) {
+                    this.$message({
+                        message: this.$t('Insufficient balance'),
+                        type: 'error'
+                    });
+                    return;
+                }
                 const loading = this.$loading({
                     lock: true,
                     text: this.$t('confirmation_transaction'),
@@ -539,14 +558,15 @@
                     background: 'rgba(0, 0, 0, 0.7)'
                 });
                 console.log(price);
-                this.API.buyIdol(this.id, price).then((res) => {
-                    console.log(res);
-                    loading.close();
-                    this.$message({
-                        message: this.$t('transaction_success'),
-                        type: 'success'
-                    });
-                    this.updatePage();
+                this.API.buyIdol(this.id, price).then(() => {
+                    this.API.transfer(this.id).then(() => {
+                        loading.close();
+                        this.$message({
+                            message: this.$t('transaction_success'),
+                            type: 'success'
+                        });
+                        this.updatePage();
+                    })
                 }).catch(err => {
                     console.log(err);
                     loading.close();
@@ -600,14 +620,15 @@
                             spinner: 'el-icon-loading',
                             background: 'rgba(0, 0, 0, 0.7)'
                         });
-                        this.API.giftIdol(this.giftForm.address, this.id).then((res) => {
-                            console.log(res);
-                            loading.close();
-                            this.$message({
-                                message: this.$t('operation_success'),
-                                type: 'success'
-                            });
-                            this.updatePage();
+                        this.API.giftIdol(this.giftForm.address, this.id).then(() => {
+                            this.API.transfer(this.id).then(() => {
+                                loading.close();
+                                this.$message({
+                                    message: this.$t('operation_success'),
+                                    type: 'success'
+                                });
+                                this.updatePage();
+                            })
                         }).catch(err => {
                             console.log(err);
                             loading.close();
@@ -676,6 +697,9 @@
                         this.idol = res.data;
                         if (res.data.IsForSale === 1 || res.data.IsRental === 1) {
                             this.draw();
+                        }
+                        if (res.data.IsRental === 1) {
+                            this.getMyIdolList();
                         }
                     } else {
                         this.hasIdol = false
@@ -883,7 +907,6 @@
         },
         mounted() {
             this.getDetail();
-            this.getMyIdolList();
             this.currentAddress = window.tronWeb.defaultAddress.base58;
             /*this.API.getIdolPrice(this.id).then(res => {
                 console.log('call:', res);

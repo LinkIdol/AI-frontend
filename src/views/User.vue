@@ -356,6 +356,15 @@
                 }
                 return result;
             }
+        },
+        watch: {
+            'window.tronWeb.ready': {
+                handler(val) {
+                    console.log('123', val);
+                },
+                immediate: true,
+                deep: true
+            }
         }
     }
 </script>
