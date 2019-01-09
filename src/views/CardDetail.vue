@@ -24,7 +24,7 @@
                     <a class="btn btn-plain" @click="showGift=true" v-if="isOwner && !canBuy">
                         <span>{{$t('gift')}}</span>
                     </a>
-                    <a class="btn btn-plain" @click="giveBirth" v-if="isPregnant && isReady">
+                    <!--<a class="btn btn-plain" @click="giveBirth" v-if="isPregnant && isReady">
                         <span>{{$t('giveBirth')}}</span>
                     </a>
                     <a class="btn btn-plain" @click="showRent = true" v-if="isForRental && isOwner">
@@ -35,7 +35,7 @@
                     </a>
                     <a class="btn btn-plain" @click="showBreed = true" v-if="!isOwner && isRental">
                         <span>{{$t('breed')}}</span>
-                    </a>
+                    </a>-->
                 </div>
             </div>
             <div class="detail fixed-width">

@@ -30,7 +30,7 @@
                             @select="handleSelect">
                         <el-menu-item index="all">{{$t('all')}}</el-menu-item>
                         <el-menu-item index="forsale">{{$t('for_sale')}}</el-menu-item>
-                        <el-menu-item index="rental">{{$t('rental')}}</el-menu-item>
+                        <!--<el-menu-item index="rental">{{$t('rental')}}</el-menu-item>-->
                     </el-menu>
                     <!--<div class="c-input">
                         <el-input
@@ -96,11 +96,11 @@
             <el-button plain style="float: right;">繁殖</el-button>
         </div>-->
         <div class="fixed-width" style="display: flex;justify-content: flex-end;">
-            <div  @click="showBreed = true">
+            <!--<div  @click="showBreed = true">
                 <a-button>
                     <span>{{$t('breed')}}</span>
                 </a-button>
-            </div>
+            </div>-->
         </div>
         <div class="fixed-width cardContainer" v-loading="loading" element-loading-background="#191428" style="margin-top: -20px;">
             <Card v-for="(item, i) in idolList"

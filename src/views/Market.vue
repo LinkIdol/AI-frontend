@@ -15,7 +15,7 @@
                             @select="handleSelect">
                         <el-menu-item index="all">{{$t('all')}}</el-menu-item>
                         <el-menu-item index="forsale">{{$t('for_sale')}}</el-menu-item>
-                        <el-menu-item index="rental">{{$t('rental')}}</el-menu-item>
+                        <!--<el-menu-item index="rental">{{$t('rental')}}</el-menu-item>-->
                         <el-menu-item index="new">{{$t('new')}}</el-menu-item>
                     </el-menu>
                     <div class="c-input">
